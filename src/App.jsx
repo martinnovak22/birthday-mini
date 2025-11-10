@@ -2,6 +2,7 @@ import "./App.css";
 import { useCallback, useEffect, useState } from "react";
 import Plot from "./components/Plot.jsx";
 import { loadGarden, saveGarden } from "./utils/gardenLoad.js";
+import { hapticBloom, hapticTap } from "./utils/haptics.js";
 
 const PLOTS = 9;
 
@@ -28,6 +29,7 @@ function App() {
 	const handleParticlesDone = useCallback(() => setSparkle(null), []);
 
 	function water(index) {
+		hapticTap();
 		setGarden((prev) => {
 			const next = [...prev];
 			const prevPlot = next[index];
@@ -39,6 +41,7 @@ function App() {
 				p.stage = "bloom";
 				p.flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
 				setSparkle(index);
+				hapticBloom();
 			} else if (p.water === 1) {
 				p.stage = "sprout";
 			}
