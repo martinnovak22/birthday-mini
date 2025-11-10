@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import Plot from "./components/Plot.jsx";
 import { loadGarden, saveGarden } from "./utils/gardenLoad.js";
 import { hapticBloom, hapticTap } from "./utils/haptics.js";
+import makeBouquetImage from "./utils/makeBouquetImage.js";
 
 const PLOTS = 9;
 
@@ -50,6 +51,15 @@ function App() {
 		});
 	}
 
+	const blooms = garden.filter((p) => p.stage === "bloom");
+
+	function downloadImage() {
+		makeBouquetImage(blooms, {
+			title: "Grown with love, always.",
+			fileName: "our-bouquet.png",
+		});
+	}
+
 	return (
 		<main className="app">
 			<section className="ground">
@@ -64,15 +74,21 @@ function App() {
 				))}
 			</section>
 
-			<button
-				type={"button"}
-				className="reset"
-				onClick={() => {
-					if (confirm("Clear every plant?")) setGarden(loadGarden(PLOTS, true));
-				}}
-			>
-				Start Over
-			</button>
+			<div className={"button-wrapper"}>
+				<button
+					type={"button"}
+					className={"button"}
+					onClick={() => {
+						if (confirm("Clear every plant?"))
+							setGarden(loadGarden(PLOTS, true));
+					}}
+				>
+					Start Over
+				</button>
+				<button type={"button"} className={"button"} onClick={downloadImage}>
+					Download bouquet
+				</button>
+			</div>
 		</main>
 	);
 }
