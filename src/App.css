@@ -1,17 +1,97 @@
-/* Minimal app styles */
+/*Garden styles*/
 #root {
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
+	display: flex;
+	min-height: 100vh;
 }
-
 .app {
-  width: min(820px, 92vw);
-  margin-inline: auto;
-  padding: clamp(1.25rem, 2vw + 0.5rem, 2.5rem);
-  text-align: center;
+	display: flex;
+	flex-direction: column;
+	width: min(820px, 92vw);
+	text-align: center;
+	margin-inline: auto;
+	padding: clamp(1.25rem, 2vw + 0.5rem, 2.5rem);
+}
+.ground {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	height: 100%;
+}
+.plot {
+	background: #654321;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
+	position: relative;
+	cursor: pointer;
+	transform-style: preserve-3d;
+	transition: transform 0.15s;
+	border: none;
+	padding: 0;
 }
 
-h1 {
-  margin: 0;
+/*Flower styles*/
+.flower-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 72px;
+}
+.emoji {
+	font-size: 32px;
+	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
+}
+.sprout {
+	font-size: 52px;
+}
+.bloom {
+	font-size: 72px;
+}
+
+/*Water styles*/
+.water-bar {
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	right: 8px;
+	height: 6px;
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 4px;
+	overflow: hidden;
+}
+.water-bar div {
+	height: 100%;
+	transition: width 0.2s;
+	background-color: #1ca3ec;
+}
+
+/*Particle box styles*/
+.particles {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	display: flex;
+	max-width: 100%;
+	min-height: 100%;
+	border-radius: 8px;
+}
+
+/*Reset button style*/
+button.reset {
+	padding: 0.6em 1.2em;
+	border: none;
+	border-radius: 8px;
+	background: var(--green-700);
+	color: black;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+	cursor: pointer;
+}
+button:focus.reset {
+	opacity: 0.5;
+}
+button:active.reset {
+	opacity: 0.5;
+}
+.reset {
+	margin-top: 2em;
+	background: #ffe0e0;
 }
