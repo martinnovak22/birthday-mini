@@ -29,15 +29,19 @@ function App() {
 
 	const handleParticlesDone = useCallback(() => setSparkle(null), []);
 
-	function water(index) {
-		hapticTap();
+	const water = useCallback((index) => {
 		setGarden((prev) => {
+			const now = Date.now();
 			const next = [...prev];
 			const prevPlot = next[index];
-			if (prevPlot.stage === "bloom") return prev;
 
-			const p = { ...prevPlot };
+			hapticTap();
+
+			const p = { ...prevPlot, lastWatered: now };
+			if (p.stage === "bloom") return prev;
+
 			p.water = Math.min(p.water + 1, 5);
+
 			if (p.water >= 5) {
 				p.stage = "bloom";
 				p.flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
@@ -46,10 +50,11 @@ function App() {
 			} else if (p.water === 1) {
 				p.stage = "sprout";
 			}
+
 			next[index] = p;
 			return next;
 		});
-	}
+	}, []);
 
 	const blooms = garden.filter((p) => p.stage === "bloom");
 
@@ -74,10 +79,10 @@ function App() {
 				))}
 			</section>
 
-			<div className={"button-wrapper"}>
+			<div className="button-wrapper">
 				<button
-					type={"button"}
-					className={"button"}
+					type="button"
+					className="button"
 					onClick={() => {
 						if (confirm("Clear every plant?"))
 							setGarden(loadGarden(PLOTS, true));
@@ -85,7 +90,7 @@ function App() {
 				>
 					Start Over
 				</button>
-				<button type={"button"} className={"button"} onClick={downloadImage}>
+				<button type="button" className="button" onClick={downloadImage}>
 					Download bouquet
 				</button>
 			</div>
