@@ -50,5 +50,6 @@ h1 {
 	margin: 0 0 12px;
 	padding: 6px 0;
 	color: var(--green-400);
-	outline: 1px solid var(--green-400);
+	border: 1px solid var(--green-400);
+	border-radius: 6px;
 }
