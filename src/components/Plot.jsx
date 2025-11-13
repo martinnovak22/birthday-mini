@@ -1,21 +1,21 @@
 import { memo, useEffect, useState } from "react";
 import BloomParticles from "./BloomParticles";
 
-// const waterToTimeMap = {
-// 	1: 2,
-// 	2: 5,
-// 	3: 10,
-// 	4: 15,
-// 	5: 30,
-// };
-
 const waterToTimeMap = {
-	1: 1,
-	2: 1,
-	3: 1,
-	4: 1,
-	5: 1,
+	1: 2,
+	2: 5,
+	3: 10,
+	4: 15,
+	5: 30,
 };
+
+// const waterToTimeMap = {
+// 	1: 1,
+// 	2: 1,
+// 	3: 1,
+// 	4: 1,
+// 	5: 1,
+// };
 
 const waterToSizeMap = {
 	2: "42px",

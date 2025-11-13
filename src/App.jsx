@@ -67,6 +67,8 @@ function App() {
 
 	return (
 		<main className="app">
+			<div className={"background"} />
+			<h1>Our little garden</h1>
 			<section className="ground">
 				{garden.map((plot, i) => (
 					<Plot
