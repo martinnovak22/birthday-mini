@@ -51,7 +51,9 @@ function Plot({ stage, water, flower, onWater, onParticlesDone, lastWatered }) {
 						🌿
 					</span>
 				)}
-				{stage === "bloom" && <span className="emoji bloom">{flower}</span>}
+				{stage === "bloom" && remaining === 0 && (
+					<span className="emoji bloom">{flower}</span>
+				)}
 			</div>
 
 			{water === 5 && remaining === 0 && (
