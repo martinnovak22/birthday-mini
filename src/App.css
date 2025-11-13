@@ -2,7 +2,7 @@
 #root {
 	display: flex;
 	justify-content: center;
-	min-height: 100vh;
+	min-height: 100%;
 }
 
 .background {
@@ -89,7 +89,7 @@
 .button-wrapper {
 	display: flex;
 	justify-content: space-evenly;
-	margin: 28px 0;
+	margin: 18px 0;
 }
 .button {
 	padding: 0.6em 1.2em;
@@ -100,14 +100,6 @@
 	font-weight: 600;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
 	cursor: pointer;
-}
-.button:focus {
-	opacity: 0.5;
-	transition: filter 0s;
-}
-.button:active {
-	opacity: 0.5;
-	transition: filter 0s;
 }
 
 /*Timer styles*/
