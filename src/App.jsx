@@ -38,25 +38,22 @@ function App() {
 			hapticTap();
 
 			const p = { ...prevPlot, lastWatered: now };
-			if (p.stage === "bloom") return prev;
+			if (p.finished) return prev;
 
 			p.water = Math.min(p.water + 1, 5);
 
 			if (p.water >= 5) {
-				p.stage = "bloom";
 				p.flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
+				p.finished = true;
 				setSparkle(index);
 				hapticBloom();
-			} else if (p.water === 1) {
-				p.stage = "sprout";
 			}
-
 			next[index] = p;
 			return next;
 		});
 	}, []);
 
-	const blooms = garden.filter((p) => p.stage === "bloom");
+	const blooms = garden.filter((p) => p.water === 5);
 
 	function downloadImage() {
 		makeBouquetImage(blooms, {
