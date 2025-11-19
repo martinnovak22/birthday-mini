@@ -23,7 +23,7 @@ const waterToSizeMap = {
 	4: "62px",
 };
 
-function Plot({ stage, water, flower, onWater, onParticlesDone, lastWatered }) {
+function Plot({ water, flower, onWater, onParticlesDone, lastWatered }) {
 	const [now, setNow] = useState(Date.now());
 
 	useEffect(() => {
@@ -45,13 +45,19 @@ function Plot({ stage, water, flower, onWater, onParticlesDone, lastWatered }) {
 			disabled={disabled}
 		>
 			<div className="flower-wrapper">
-				{stage === "seed" && <span className="emoji seed">🌱</span>}
-				{stage === "sprout" && (
+				{water === -1 && (
+					<img src={plus} alt={"seed"} className={"icon-image"} />
+				)}
+				{water === 0 && (
+					<img src={seed} alt={"seed"} className={"icon-image"} />
+				)}
+				{water === 1 && <span className="emoji seed">🌱</span>}
+				{water >= 2 && water < 5 && (
 					<span className="emoji" style={{ fontSize: waterToSizeMap[water] }}>
 						🌿
 					</span>
 				)}
-				{stage === "bloom" && remaining === 0 && (
+				{water === 5 && remaining === 0 && (
 					<span className="emoji bloom">{flower}</span>
 				)}
 			</div>
@@ -61,7 +67,7 @@ function Plot({ stage, water, flower, onWater, onParticlesDone, lastWatered }) {
 			)}
 
 			<div className="water-bar">
-				<div style={{ width: `${(water / 5) * 100}%` }} />
+				<div style={{ width: water === -1 ? "0%" : `${(water / 5) * 100}%` }} />
 			</div>
 
 			{disabled && (

@@ -4,7 +4,6 @@ export function loadGarden(size, forceEmpty = false) {
 		const raw = localStorage.getItem("garden");
 		if (raw) {
 			const data = JSON.parse(raw);
-			console.log(data);
 			if (data.length === size) return data;
 		}
 	} catch {
@@ -19,8 +18,7 @@ export function saveGarden(garden) {
 
 function empty(size) {
 	return Array.from({ length: size }, () => ({
-		stage: "seed",
-		water: 0,
+		water: -1,
 		flower: "",
 		lastWatered: 0,
 	}));
