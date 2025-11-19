@@ -41,6 +41,16 @@
 	border: none;
 	padding: 0;
 }
+.plot:hover {
+	cursor:
+		url("./assets/drop.svg") 12 12,
+		auto;
+}
+.plot:not(:disabled):hover {
+	cursor:
+		url("./assets/drop.svg") 12 12,
+		pointer;
+}
 
 /*Flower styles*/
 .flower-wrapper {
