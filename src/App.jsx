@@ -1,5 +1,7 @@
 import "./App.css";
 import { useCallback, useEffect, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
+import { ConfirmationToast } from "./components/ConfirmationToast.jsx";
 import Plot from "./components/Plot.jsx";
 import { loadGarden, saveGarden } from "./utils/gardenLoad.js";
 import { hapticBloom, hapticTap } from "./utils/haptics.js";
@@ -64,6 +66,7 @@ function App() {
 
 	return (
 		<main className="app">
+			<Toaster />
 			<div className={"background"} />
 			<h1>Our little garden</h1>
 			<section className="ground">
@@ -82,14 +85,24 @@ function App() {
 				<button
 					type="button"
 					className="button"
-					onClick={() => {
-						if (confirm("Clear every plant?"))
-							setGarden(loadGarden(PLOTS, true));
+					disabled={!garden.some((p) => p.water >= 0)}
+					onClick={async () => {
+						toast(
+							<ConfirmationToast
+								onYes={() => setGarden(loadGarden(PLOTS, true))}
+								toast={toast}
+							/>,
+						);
 					}}
 				>
-					Start Over
+					Start again
 				</button>
-				<button type="button" className="button" onClick={downloadImage}>
+				<button
+					type="button"
+					className="button"
+					onClick={downloadImage}
+					disabled={garden.every((p) => !p.finished)}
+				>
 					Download bouquet
 				</button>
 			</div>

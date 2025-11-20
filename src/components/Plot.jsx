@@ -1,4 +1,6 @@
 import { memo, useEffect, useState } from "react";
+import plus from "../assets/plus.png";
+import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
 
 const waterToTimeMap = {
