@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { ConfirmationToast } from "./components/ConfirmationToast.jsx";
 import Plot from "./components/Plot.jsx";
+import { SelectionToast } from "./components/SelectionToast.jsx";
 import { loadGarden, saveGarden } from "./utils/gardenLoad.js";
 import { hapticBloom, hapticTap } from "./utils/haptics.js";
 import makeBouquetImage from "./utils/makeBouquetImage.js";
@@ -59,7 +60,6 @@ function App() {
 
 	function downloadImage() {
 		makeBouquetImage(blooms, {
-			title: "Grown with love, always.",
 			fileName: "our-bouquet.png",
 		});
 	}
@@ -86,7 +86,7 @@ function App() {
 					type="button"
 					className="button"
 					disabled={!garden.some((p) => p.water >= 0)}
-					onClick={async () => {
+					onClick={() => {
 						toast(
 							<ConfirmationToast
 								onYes={() => setGarden(loadGarden(PLOTS, true))}
@@ -100,7 +100,15 @@ function App() {
 				<button
 					type="button"
 					className="button"
-					onClick={downloadImage}
+					onClick={() => {
+						toast(
+							<SelectionToast
+								toast={toast}
+								onCustomSelect={downloadImage}
+								blooms={blooms}
+							/>,
+						);
+					}}
 					disabled={garden.every((p) => !p.finished)}
 				>
 					Download bouquet
