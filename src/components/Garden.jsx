@@ -7,6 +7,7 @@ import { emptyGarden } from "../utils/gardenLoad.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
+import { ErrorRefresh } from "./Error.jsx";
 import Plot from "./Plot.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
 
@@ -30,14 +31,22 @@ export const Garden = ({ user }) => {
 	const [sparkle, setSparkle] = useState(null);
 	const [garden, setGarden] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		if (!user) return;
 
 		(async () => {
 			setIsLoading(true);
-			const data = await loadGardenFromDB(user.uid, PLOTS);
-			setGarden(data);
+			setError(null);
+
+			try {
+				const data = await loadGardenFromDB(user.uid, PLOTS);
+				setGarden(data);
+			} catch (err) {
+				console.error("Garden failed to load", err);
+				setError("Garden failed to load");
+			}
 			setIsLoading(false);
 		})();
 	}, [user]);
@@ -76,13 +85,23 @@ export const Garden = ({ user }) => {
 		});
 	}, []);
 
-	if (isLoading) return <span className={"text"}>Loading garden…</span>;
-	if (!garden)
+	if (isLoading) {
+		return <span className="text">Loading garden…</span>;
+	}
+
+	if (error) {
 		return (
-			<button type={"button"} onClick={() => loadGardenFromDB(user.uid, PLOTS)}>
-				Refresh
-			</button>
+			<ErrorRefresh
+				onClick={async () => {
+					const data = await loadGardenFromDB(user.uid, PLOTS);
+					setGarden(data);
+					setError(false);
+				}}
+			/>
 		);
+	}
+
+	if (!garden) return null;
 
 	const blooms = garden.filter((p) => p.water === 5);
 
@@ -94,7 +113,6 @@ export const Garden = ({ user }) => {
 
 	return (
 		<>
-			<div className={"background"} />
 			<h1>Cute little garden</h1>
 
 			<section className="ground">

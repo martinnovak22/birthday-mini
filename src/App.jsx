@@ -21,12 +21,13 @@ function App() {
 	return (
 		<main className="app">
 			<Toaster />
+			<div className={"background"} />
 
-			{loadingUser && <span className="text">Loading user…</span>}
+			{loadingUser ? <span className="text">Loading user…</span> : null}
 
-			{!loadingUser && !user && <Welcome />}
+			{!loadingUser && !user ? <Welcome /> : null}
 
-			{!loadingUser && user && <Garden user={user} />}
+			{!loadingUser && user ? <Garden user={user} /> : null}
 		</main>
 	);
 }
