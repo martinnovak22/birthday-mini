@@ -137,6 +137,8 @@ export const Garden = ({ user }) => {
 							<ConfirmationToast
 								onYes={() => setGarden(emptyGarden(PLOTS))}
 								toast={toast}
+								title={"Start again"}
+								text={"Do you want to start with fresh garden?"}
 							/>,
 						);
 					}}
@@ -153,6 +155,7 @@ export const Garden = ({ user }) => {
 								onCustomSelect={downloadImage}
 								blooms={blooms}
 							/>,
+							{},
 						)
 					}
 					disabled={garden.every((p) => !p.finished)}
@@ -161,7 +164,16 @@ export const Garden = ({ user }) => {
 				</button>
 				<button
 					className="button"
-					onClick={() => signOut(auth)}
+					onClick={() =>
+						toast(
+							<ConfirmationToast
+								onYes={() => signOut(auth)}
+								toast={toast}
+								title={"Logout"}
+								text={"Do you want to logout?"}
+							/>,
+						)
+					}
 					type={"button"}
 				>
 					Logout

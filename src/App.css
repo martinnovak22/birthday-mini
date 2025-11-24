@@ -112,6 +112,15 @@
 	cursor: pointer;
 }
 
+.x-button {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 4px 2px;
+	border: none;
+	background: none;
+}
+
 .button:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
