@@ -1,119 +1,28 @@
 import "./App.css";
-import { useCallback, useEffect, useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
-import { ConfirmationToast } from "./components/ConfirmationToast.jsx";
-import Plot from "./components/Plot.jsx";
-import { SelectionToast } from "./components/SelectionToast.jsx";
-import { loadGarden, saveGarden } from "./utils/gardenLoad.js";
-import { hapticBloom, hapticTap } from "./utils/haptics.js";
-import makeBouquetImage from "./utils/makeBouquetImage.js";
-
-const PLOTS = 9;
-
-const FLOWERS = [
-	"🌸",
-	"🌺",
-	"🌻",
-	"🏵️",
-	"🌼",
-	"🪻",
-	"🥀",
-	"🌷",
-	"🌹",
-	"💮",
-	"🪷",
-];
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { Garden } from "./components/Garden.jsx";
+import { auth, signInWithGoogle } from "./utils/firebase.js";
 
 function App() {
-	const [garden, setGarden] = useState(() => loadGarden(PLOTS));
-	const [sparkle, setSparkle] = useState(null);
+	const [user, setUser] = useState(null);
 
-	useEffect(() => saveGarden(garden), [garden]);
-
-	const handleParticlesDone = useCallback(() => setSparkle(null), []);
-
-	const water = useCallback((index) => {
-		setGarden((prev) => {
-			const now = Date.now();
-			const next = [...prev];
-			const prevPlot = next[index];
-
-			hapticTap();
-
-			const p = { ...prevPlot, lastWatered: now };
-			if (p.finished) return prev;
-
-			p.water = Math.min(p.water + 1, 5);
-
-			if (p.water >= 5) {
-				p.flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
-				p.finished = true;
-				setSparkle(index);
-				hapticBloom();
-			}
-			next[index] = p;
-			return next;
-		});
+	useEffect(() => {
+		const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+		return () => unsub();
 	}, []);
-
-	const blooms = garden.filter((p) => p.water === 5);
-
-	function downloadImage() {
-		makeBouquetImage(blooms, {
-			fileName: "our-bouquet.png",
-		});
-	}
 
 	return (
 		<main className="app">
 			<Toaster />
-			<div className={"background"} />
-			<h1>Our little garden</h1>
-			<section className="ground">
-				{garden.map((plot, i) => (
-					<Plot
-						key={i.toString()}
-						{...plot}
-						onWater={() => water(i)}
-						showParticles={sparkle === i}
-						onParticlesDone={handleParticlesDone}
-					/>
-				))}
-			</section>
+			{!user && (
+				<button className="button" onClick={signInWithGoogle} type={"button"}>
+					Login with Google
+				</button>
+			)}
 
-			<div className="button-wrapper">
-				<button
-					type="button"
-					className="button"
-					disabled={!garden.some((p) => p.water >= 0)}
-					onClick={() => {
-						toast(
-							<ConfirmationToast
-								onYes={() => setGarden(loadGarden(PLOTS, true))}
-								toast={toast}
-							/>,
-						);
-					}}
-				>
-					Start again
-				</button>
-				<button
-					type="button"
-					className="button"
-					onClick={() => {
-						toast(
-							<SelectionToast
-								toast={toast}
-								onCustomSelect={downloadImage}
-								blooms={blooms}
-							/>,
-						);
-					}}
-					disabled={garden.every((p) => !p.finished)}
-				>
-					Download bouquet
-				</button>
-			</div>
+			{user && <Garden />}
 		</main>
 	);
 }
