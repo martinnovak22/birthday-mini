@@ -8,17 +8,25 @@ import { auth } from "./utils/firebase.js";
 
 function App() {
 	const [user, setUser] = useState(null);
+	const [loadingUser, setLoadingUser] = useState(true);
 
 	useEffect(() => {
-		const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+		const unsub = onAuthStateChanged(auth, (u) => {
+			setUser(u);
+			setLoadingUser(false);
+		});
 		return () => unsub();
 	}, []);
 
 	return (
 		<main className="app">
 			<Toaster />
-			{!user && <Welcome />}
-			{user && <Garden />}
+
+			{loadingUser && <span className="text">Loading user…</span>}
+
+			{!loadingUser && !user && <Welcome />}
+
+			{!loadingUser && user && <Garden user={user} />}
 		</main>
 	);
 }

@@ -2,7 +2,8 @@ import { signOut } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { auth } from "../utils/firebase.js";
-import { loadGarden, saveGarden } from "../utils/gardenLoad.js";
+import { loadGardenFromDB, saveGardenToDB } from "../utils/gardenDB.js";
+import { emptyGarden } from "../utils/gardenLoad.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
@@ -25,16 +26,33 @@ const FLOWERS = [
 	"🪷",
 ];
 
-export const Garden = () => {
-	const [garden, setGarden] = useState(() => loadGarden(PLOTS));
+export const Garden = ({ user }) => {
 	const [sparkle, setSparkle] = useState(null);
+	const [garden, setGarden] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => saveGarden(garden), [garden]);
+	useEffect(() => {
+		if (!user) return;
+
+		(async () => {
+			setIsLoading(true);
+			const data = await loadGardenFromDB(user.uid, PLOTS);
+			setGarden(data);
+			setIsLoading(false);
+		})();
+	}, [user]);
+
+	useEffect(() => {
+		if (!user || !garden) return;
+		saveGardenToDB(user.uid, garden);
+	}, [user, garden]);
 
 	const handleParticlesDone = useCallback(() => setSparkle(null), []);
 
 	const water = useCallback((index) => {
 		setGarden((prev) => {
+			if (!prev) return prev;
+
 			const now = Date.now();
 			const next = [...prev];
 			const prevPlot = next[index];
@@ -52,10 +70,19 @@ export const Garden = () => {
 				setSparkle(index);
 				hapticBloom();
 			}
+
 			next[index] = p;
 			return next;
 		});
 	}, []);
+
+	if (isLoading) return <span className={"text"}>Loading garden…</span>;
+	if (!garden)
+		return (
+			<button type={"button"} onClick={() => loadGardenFromDB(user.uid, PLOTS)}>
+				Refresh
+			</button>
+		);
 
 	const blooms = garden.filter((p) => p.water === 5);
 
@@ -69,6 +96,7 @@ export const Garden = () => {
 		<>
 			<div className={"background"} />
 			<h1>Cute little garden</h1>
+
 			<section className="ground">
 				{garden.map((plot, i) => (
 					<Plot
@@ -89,7 +117,7 @@ export const Garden = () => {
 					onClick={() => {
 						toast(
 							<ConfirmationToast
-								onYes={() => setGarden(loadGarden(PLOTS, true))}
+								onYes={() => setGarden(emptyGarden(PLOTS))}
 								toast={toast}
 							/>,
 						);
@@ -100,15 +128,15 @@ export const Garden = () => {
 				<button
 					type="button"
 					className="button"
-					onClick={() => {
+					onClick={() =>
 						toast(
 							<SelectionToast
 								toast={toast}
 								onCustomSelect={downloadImage}
 								blooms={blooms}
 							/>,
-						);
-					}}
+						)
+					}
 					disabled={garden.every((p) => !p.finished)}
 				>
 					Download bouquet
