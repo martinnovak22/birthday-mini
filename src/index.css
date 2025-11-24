@@ -53,3 +53,25 @@ h1 {
 	border: 1px solid var(--green-400);
 	border-radius: 6px;
 }
+
+.welcome {
+	display: flex;
+	height: 85dvh;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.title {
+	color: var(--green-400);
+	border: none;
+}
+
+.text {
+	color: var(--green-400);
+	margin-bottom: 18px;
+}
+
+.image {
+	width: 220px;
+}

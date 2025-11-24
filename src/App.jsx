@@ -3,7 +3,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { Garden } from "./components/Garden.jsx";
-import { auth, signInWithGoogle } from "./utils/firebase.js";
+import { Welcome } from "./components/Welcome.jsx";
+import { auth } from "./utils/firebase.js";
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -16,12 +17,7 @@ function App() {
 	return (
 		<main className="app">
 			<Toaster />
-			{!user && (
-				<button className="button" onClick={signInWithGoogle} type={"button"}>
-					Login with Google
-				</button>
-			)}
-
+			{!user && <Welcome />}
 			{user && <Garden />}
 		</main>
 	);
