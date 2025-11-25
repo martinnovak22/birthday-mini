@@ -1,6 +1,5 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
-import { emptyGarden } from "./gardenLoad.js";
 
 export async function loadGardenFromDB(uid, size) {
 	const ref = doc(db, "gardens", uid);
@@ -18,4 +17,12 @@ export async function loadGardenFromDB(uid, size) {
 export async function saveGardenToDB(uid, garden) {
 	const ref = doc(db, "gardens", uid);
 	await updateDoc(ref, { garden });
+}
+
+export function emptyGarden(size) {
+	return Array.from({ length: size }, () => ({
+		water: -1,
+		flower: "",
+		lastWatered: 0,
+	}));
 }

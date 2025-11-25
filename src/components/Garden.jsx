@@ -2,15 +2,25 @@ import { signOut } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { auth } from "../utils/firebase.js";
-import { loadGardenFromDB, saveGardenToDB } from "../utils/gardenDB.js";
-import { emptyGarden } from "../utils/gardenLoad.js";
+import {
+	emptyGarden,
+	loadGardenFromDB,
+	saveGardenToDB,
+} from "../utils/gardenDB.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
+import {
+	addBloom,
+	bloomsRequiredFor,
+	levelUp,
+	loadUserProfile,
+} from "../utils/userDB.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import Plot from "./Plot.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
+import { User } from "./User.jsx";
 
 const PLOTS = 9;
 
@@ -34,21 +44,27 @@ export const Garden = ({ user }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [profile, setProfile] = useState(null);
+
+	const handleParticlesDone = useCallback(() => setSparkle(null), []);
 
 	useEffect(() => {
 		if (!user) return;
 
 		(async () => {
 			setIsLoading(true);
-			setError(null);
 
 			try {
 				const data = await loadGardenFromDB(user.uid, PLOTS);
 				setGarden(data);
+
+				const profileData = await loadUserProfile(user.uid);
+				setProfile(profileData);
 			} catch (err) {
-				console.error("Garden failed to load", err);
+				console.error("Load failed", err);
 				setError("Garden failed to load");
 			}
+
 			setIsLoading(false);
 		})();
 	}, [user]);
@@ -58,33 +74,52 @@ export const Garden = ({ user }) => {
 		saveGardenToDB(user.uid, garden);
 	}, [user, garden]);
 
-	const handleParticlesDone = useCallback(() => setSparkle(null), []);
+	const water = useCallback(
+		(index) => {
+			setGarden((prev) => {
+				if (!prev) return prev;
 
-	const water = useCallback((index) => {
-		setGarden((prev) => {
-			if (!prev) return prev;
+				const now = Date.now();
+				const next = [...prev];
+				const prevPlot = next[index];
 
-			const now = Date.now();
-			const next = [...prev];
-			const prevPlot = next[index];
+				hapticTap();
 
-			hapticTap();
+				const p = { ...prevPlot, lastWatered: now };
+				if (p.finished) return prev;
 
-			const p = { ...prevPlot, lastWatered: now };
-			if (p.finished) return prev;
+				p.water = Math.min(p.water + 1, 5);
 
-			p.water = Math.min(p.water + 1, 5);
+				if (p.water >= 5) {
+					p.finished = true;
+					setSparkle(index);
+					hapticBloom();
 
-			if (p.water >= 5) {
-				p.finished = true;
-				setSparkle(index);
-				hapticBloom();
-			}
+					addBloom(user.uid);
 
-			next[index] = p;
-			return next;
-		});
-	}, []);
+					setProfile((prev) => {
+						if (!prev) return prev;
+
+						const updated = { ...prev };
+						updated.blooms += 1;
+
+						const required = bloomsRequiredFor(updated.level);
+
+						if (updated.blooms >= required) {
+							updated.level += 1;
+							levelUp(user.uid);
+						}
+
+						return updated;
+					});
+				}
+
+				next[index] = p;
+				return next;
+			});
+		},
+		[user.uid],
+	);
 
 	if (isLoading) {
 		return <span className="text">Loading garden…</span>;
@@ -151,6 +186,7 @@ export const Garden = ({ user }) => {
 				))}
 			</section>
 			<div className={`side-menu ${menuOpen ? "open" : ""}`}>
+				<h1>Menu</h1>
 				<button
 					type="button"
 					className="close-btn"
@@ -158,7 +194,7 @@ export const Garden = ({ user }) => {
 				>
 					×
 				</button>
-
+				<User profile={profile} name={user.displayName} />
 				<button
 					type="button"
 					className="button"
