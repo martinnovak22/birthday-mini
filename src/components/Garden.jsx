@@ -33,6 +33,7 @@ export const Garden = ({ user }) => {
 	const [garden, setGarden] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [menuOpen, setMenuOpen] = useState(false);
 
 	useEffect(() => {
 		if (!user) return;
@@ -107,7 +108,16 @@ export const Garden = ({ user }) => {
 
 	return (
 		<>
-			<h1>Cute little garden</h1>
+			<div className={"header"}>
+				<button
+					type={"button"}
+					className={"menu-toggle"}
+					onClick={() => setMenuOpen(true)}
+				>
+					☰
+				</button>
+				<h1>Cute little garden</h1>
+			</div>
 			<section className="ground">
 				{garden.map((plot, i) => (
 					<Plot
@@ -140,12 +150,21 @@ export const Garden = ({ user }) => {
 					/>
 				))}
 			</section>
-			<div className="button-wrapper">
+			<div className={`side-menu ${menuOpen ? "open" : ""}`}>
+				<button
+					type="button"
+					className="close-btn"
+					onClick={() => setMenuOpen(false)}
+				>
+					×
+				</button>
+
 				<button
 					type="button"
 					className="button"
 					disabled={!garden.some((p) => p.water >= 0)}
 					onClick={() => {
+						setMenuOpen(false);
 						toast(
 							<ConfirmationToast
 								onYes={() => setGarden(emptyGarden(PLOTS))}
@@ -158,10 +177,12 @@ export const Garden = ({ user }) => {
 				>
 					Start again
 				</button>
+
 				<button
 					type="button"
 					className="button"
-					onClick={() =>
+					onClick={() => {
+						setMenuOpen(false);
 						toast(
 							<SelectionToast
 								toast={toast}
@@ -172,16 +193,18 @@ export const Garden = ({ user }) => {
 								}
 								blooms={blooms}
 							/>,
-							{},
-						)
-					}
+						);
+					}}
 					disabled={garden.every((p) => !p.finished)}
 				>
 					Download bouquet
 				</button>
+
 				<button
+					type="button"
 					className="button"
-					onClick={() =>
+					onClick={() => {
+						setMenuOpen(false);
 						toast(
 							<ConfirmationToast
 								onYes={() => signOut(auth)}
@@ -189,9 +212,8 @@ export const Garden = ({ user }) => {
 								title={"Logout"}
 								text={"Do you want to logout?"}
 							/>,
-						)
-					}
-					type={"button"}
+						);
+					}}
 				>
 					Logout
 				</button>

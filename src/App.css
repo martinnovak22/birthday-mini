@@ -19,8 +19,48 @@
 	display: flex;
 	flex-direction: column;
 	text-align: center;
-	padding: 15px 20px 0;
+	padding: 15px 20px 20px;
 	width: 100%;
+}
+.header {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 0 10px;
+}
+.menu-toggle {
+	position: absolute;
+	left: 20px;
+	border: none;
+	width: 30px;
+	height: 30px;
+	background-color: var(--green-400);
+	outline: none;
+}
+.side-menu {
+	position: fixed;
+	top: 0;
+	width: 260px;
+	left: -300px;
+	height: 100vh;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	transition: left 0.3s ease;
+	background-color: var(--green-400);
+}
+
+.side-menu.open {
+	left: 0;
+}
+.side-menu .close-btn {
+	align-self: flex-end;
+	background: transparent;
+	border: none;
+	font-size: 26px;
+	cursor: pointer;
 }
 .ground {
 	display: grid;
@@ -119,6 +159,7 @@
 	margin: 4px 2px;
 	border: none;
 	background: none;
+	font-size: 24px;
 }
 
 .button:disabled {
