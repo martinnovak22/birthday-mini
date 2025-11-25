@@ -25,7 +25,14 @@ const waterToSizeMap = {
 	4: "62px",
 };
 
-function Plot({ water, flower, onWater, onParticlesDone, lastWatered }) {
+function Plot({
+	water,
+	flower,
+	onWater,
+	onParticlesDone,
+	lastWatered,
+	onSeedClick,
+}) {
 	const [now, setNow] = useState(Date.now());
 
 	useEffect(() => {
@@ -39,11 +46,18 @@ function Plot({ water, flower, onWater, onParticlesDone, lastWatered }) {
 	);
 	const disabled = remaining > 0;
 
+	const handleClick = () => {
+		if (water === -1) {
+			onSeedClick();
+			return;
+		}
+		onWater();
+	};
 	return (
 		<button
 			type="button"
 			className="plot"
-			onClick={onWater}
+			onClick={handleClick}
 			disabled={disabled}
 		>
 			<div className="flower-wrapper">

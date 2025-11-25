@@ -8,6 +8,7 @@ import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
 import { ErrorRefresh } from "./Error.jsx";
+import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import Plot from "./Plot.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
 
@@ -74,7 +75,6 @@ export const Garden = ({ user }) => {
 			p.water = Math.min(p.water + 1, 5);
 
 			if (p.water >= 5) {
-				p.flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
 				p.finished = true;
 				setSparkle(index);
 				hapticBloom();
@@ -105,16 +105,9 @@ export const Garden = ({ user }) => {
 
 	const blooms = garden.filter((p) => p.water === 5);
 
-	function downloadImage() {
-		makeBouquetImage(blooms, {
-			fileName: "our-bouquet.png",
-		});
-	}
-
 	return (
 		<>
 			<h1>Cute little garden</h1>
-
 			<section className="ground">
 				{garden.map((plot, i) => (
 					<Plot
@@ -122,11 +115,31 @@ export const Garden = ({ user }) => {
 						{...plot}
 						onWater={() => water(i)}
 						showParticles={sparkle === i}
+						onSeedClick={() =>
+							toast(
+								<FlowerSelectToast
+									toast={toast}
+									flowers={FLOWERS}
+									onSelect={(flower) => {
+										setGarden((prev) => {
+											const next = [...prev];
+											next[i] = {
+												...next[i],
+												water: 0,
+												flower,
+												finished: false,
+												lastWatered: Date.now(),
+											};
+											return next;
+										});
+									}}
+								/>,
+							)
+						}
 						onParticlesDone={handleParticlesDone}
 					/>
 				))}
 			</section>
-
 			<div className="button-wrapper">
 				<button
 					type="button"
@@ -152,7 +165,11 @@ export const Garden = ({ user }) => {
 						toast(
 							<SelectionToast
 								toast={toast}
-								onCustomSelect={downloadImage}
+								onCustomSelect={() =>
+									makeBouquetImage(blooms, {
+										fileName: "our-bouquet.png",
+									})
+								}
 								blooms={blooms}
 							/>,
 							{},

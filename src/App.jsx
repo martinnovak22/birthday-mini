@@ -23,7 +23,7 @@ function App() {
 		<main className="app">
 			<Toaster>
 				{(t) => (
-					<ToastBar toast={t}>
+					<ToastBar toast={t} style={{ backgroundColor: "var(--green-400)" }}>
 						{({ message }) => (
 							<>
 								{message}

@@ -216,9 +216,26 @@
 	column-gap: 12px;
 }
 
+.toast-flowers {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+}
+
+.toast-flower-button {
+	width: 100px;
+	height: 80px;
+}
+
+.toast-flower {
+	font-size: 40px;
+}
+
 .toast-title {
 	font-size: 18px;
 	margin-bottom: 4px;
+	color: black;
 }
 .toast-text {
 	font-size: 14px;
