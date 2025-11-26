@@ -1,23 +1,15 @@
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
 
 const waterToTimeMap = {
-	1: 2,
-	2: 5,
-	3: 10,
-	4: 15,
-	5: 30,
+	1: 1,
+	2: 1,
+	3: 1,
+	4: 1,
+	5: 10,
 };
-
-// const waterToTimeMap = {
-// 	1: 1,
-// 	2: 1,
-// 	3: 1,
-// 	4: 1,
-// 	5: 1,
-// };
 
 const waterToSizeMap = {
 	2: "42px",
@@ -32,14 +24,9 @@ function Plot({
 	onParticlesDone,
 	lastWatered,
 	onSeedClick,
+	now,
+	showParticles,
 }) {
-	const [now, setNow] = useState(Date.now());
-
-	useEffect(() => {
-		const id = setInterval(() => setNow(Date.now()), 1000);
-		return () => clearInterval(id);
-	}, []);
-
 	const remaining = Math.max(
 		0,
 		waterToTimeMap[water] - (now - lastWatered) / 1000,
@@ -73,12 +60,12 @@ function Plot({
 						🌿
 					</span>
 				)}
-				{water === 5 && remaining === 0 && (
+				{water === 5 && (
 					<span className="emoji bloom">{flower}</span>
 				)}
 			</div>
 
-			{water === 5 && remaining === 0 && (
+			{showParticles && remaining === 0 && (
 				<BloomParticles onDone={onParticlesDone} />
 			)}
 

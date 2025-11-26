@@ -1,22 +1,22 @@
+import { Toast } from "./Toast.jsx";
+
 export const FlowerSelectToast = ({ toast, flowers, onSelect }) => {
 	return (
-		<div className="toast">
-			<div className="toast-title">Choose your flower</div>
-			<div className={"toast-flowers"}>
+		<Toast>
+			<Toast.Title>Choose your flower</Toast.Title>
+			<Toast.Flowers>
 				{flowers.map((f) => (
-					<button
-						type={"button"}
+					<Toast.FlowerButton
 						key={f}
-						className={"button toast-flower-button"}
 						onClick={() => {
 							toast.dismiss();
 							onSelect(f);
 						}}
 					>
-						<span className={"toast-flower"}>{f}</span>
-					</button>
+						{f}
+					</Toast.FlowerButton>
 				))}
-			</div>
-		</div>
+			</Toast.Flowers>
+		</Toast>
 	);
 };

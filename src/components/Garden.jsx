@@ -1,18 +1,10 @@
-import { signOut } from "firebase/auth";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { auth } from "../utils/firebase.js";
-import { loadGardenFromDB, saveGardenToDB } from "../utils/gardenDB.js";
-import { emptyGarden } from "../utils/gardenLoad.js";
-import { hapticBloom, hapticTap } from "../utils/haptics.js";
-import makeBouquetImage from "../utils/makeBouquetImage.js";
-import { ConfirmationToast } from "./ConfirmationToast.jsx";
+import { useGarden } from "../hooks/useGarden.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import Plot from "./Plot.jsx";
-import { SelectionToast } from "./SelectionToast.jsx";
-
-const PLOTS = 9;
+import { SideMenu } from "./SideMenu.jsx";
 
 const FLOWERS = [
 	"🌸",
@@ -29,60 +21,25 @@ const FLOWERS = [
 ];
 
 export const Garden = ({ user }) => {
-	const [sparkle, setSparkle] = useState(null);
-	const [garden, setGarden] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const {
+		garden,
+		profile,
+		isLoading,
+		error,
+		sparkle,
+		water,
+		plant,
+		resetGarden,
+		clearSparkle,
+		reload,
+	} = useGarden(user);
+
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [now, setNow] = useState(Date.now());
 
 	useEffect(() => {
-		if (!user) return;
-
-		(async () => {
-			setIsLoading(true);
-			setError(null);
-
-			try {
-				const data = await loadGardenFromDB(user.uid, PLOTS);
-				setGarden(data);
-			} catch (err) {
-				console.error("Garden failed to load", err);
-				setError("Garden failed to load");
-			}
-			setIsLoading(false);
-		})();
-	}, [user]);
-
-	useEffect(() => {
-		if (!user || !garden) return;
-		saveGardenToDB(user.uid, garden);
-	}, [user, garden]);
-
-	const handleParticlesDone = useCallback(() => setSparkle(null), []);
-
-	const water = useCallback((index) => {
-		setGarden((prev) => {
-			if (!prev) return prev;
-
-			const now = Date.now();
-			const next = [...prev];
-			const prevPlot = next[index];
-
-			hapticTap();
-
-			const p = { ...prevPlot, lastWatered: now };
-			if (p.finished) return prev;
-
-			p.water = Math.min(p.water + 1, 5);
-
-			if (p.water >= 5) {
-				p.finished = true;
-				setSparkle(index);
-				hapticBloom();
-			}
-
-			next[index] = p;
-			return next;
-		});
+		const id = setInterval(() => setNow(Date.now()), 1000);
+		return () => clearInterval(id);
 	}, []);
 
 	if (isLoading) {
@@ -90,29 +47,29 @@ export const Garden = ({ user }) => {
 	}
 
 	if (error) {
-		return (
-			<ErrorRefresh
-				onClick={async () => {
-					const data = await loadGardenFromDB(user.uid, PLOTS);
-					setGarden(data);
-					setError(false);
-				}}
-			/>
-		);
+		return <ErrorRefresh onClick={reload} />;
 	}
 
 	if (!garden) return null;
 
-	const blooms = garden.filter((p) => p.water === 5);
-
 	return (
 		<>
-			<h1>Cute little garden</h1>
+			<div className={"header"}>
+				<button
+					type={"button"}
+					className={"menu-toggle"}
+					onClick={() => setMenuOpen(true)}
+				>
+					☰
+				</button>
+				<h1>Cute little garden</h1>
+			</div>
 			<section className="ground">
 				{garden.map((plot, i) => (
 					<Plot
 						key={i.toString()}
 						{...plot}
+						now={now}
 						onWater={() => water(i)}
 						showParticles={sparkle === i}
 						onSeedClick={() =>
@@ -120,82 +77,23 @@ export const Garden = ({ user }) => {
 								<FlowerSelectToast
 									toast={toast}
 									flowers={FLOWERS}
-									onSelect={(flower) => {
-										setGarden((prev) => {
-											const next = [...prev];
-											next[i] = {
-												...next[i],
-												water: 0,
-												flower,
-												finished: false,
-												lastWatered: Date.now(),
-											};
-											return next;
-										});
-									}}
+									onSelect={(flower) => plant(i, flower)}
 								/>,
 							)
 						}
-						onParticlesDone={handleParticlesDone}
+						onParticlesDone={clearSparkle}
 					/>
 				))}
 			</section>
-			<div className="button-wrapper">
-				<button
-					type="button"
-					className="button"
-					disabled={!garden.some((p) => p.water >= 0)}
-					onClick={() => {
-						toast(
-							<ConfirmationToast
-								onYes={() => setGarden(emptyGarden(PLOTS))}
-								toast={toast}
-								title={"Start again"}
-								text={"Do you want to start with fresh garden?"}
-							/>,
-						);
-					}}
-				>
-					Start again
-				</button>
-				<button
-					type="button"
-					className="button"
-					onClick={() =>
-						toast(
-							<SelectionToast
-								toast={toast}
-								onCustomSelect={() =>
-									makeBouquetImage(blooms, {
-										fileName: "our-bouquet.png",
-									})
-								}
-								blooms={blooms}
-							/>,
-							{},
-						)
-					}
-					disabled={garden.every((p) => !p.finished)}
-				>
-					Download bouquet
-				</button>
-				<button
-					className="button"
-					onClick={() =>
-						toast(
-							<ConfirmationToast
-								onYes={() => signOut(auth)}
-								toast={toast}
-								title={"Logout"}
-								text={"Do you want to logout?"}
-							/>,
-						)
-					}
-					type={"button"}
-				>
-					Logout
-				</button>
-			</div>
+			<SideMenu
+				isOpen={menuOpen}
+				onClose={() => setMenuOpen(false)}
+				user={user}
+				profile={profile}
+				garden={garden}
+				onReset={resetGarden}
+				toast={toast}
+			/>
 		</>
 	);
 };
