@@ -8,6 +8,8 @@ export async function loadUserProfile(uid) {
 	if (!snap.exists()) {
 		const initial = {
 			level: 1,
+			xp: 0,
+			xpToNextLevel: 500,
 			blooms: 0,
 			lastUpdated: Date.now(),
 		};
@@ -26,14 +28,24 @@ export async function addBloom(uid) {
 	});
 }
 
-export async function levelUp(uid) {
+export async function addXP(uid, amount) {
 	const ref = doc(db, "users", uid);
 	await updateDoc(ref, {
-		level: increment(1),
+		xp: increment(amount),
 		lastUpdated: Date.now(),
 	});
 }
 
-export function bloomsRequiredFor(level) {
-	return 1 + (level - 1) * 2;
+export async function levelUp(uid, newLevel) {
+	const ref = doc(db, "users", uid);
+	const newXpRequired = xpRequiredForLevel(newLevel);
+	await updateDoc(ref, {
+		level: newLevel,
+		xpToNextLevel: newXpRequired,
+		lastUpdated: Date.now(),
+	});
+}
+
+export function xpRequiredForLevel(level) {
+	return 500 + (level - 1) * 100;
 }
