@@ -20,7 +20,7 @@ export function useGarden(user) {
 	const [profile, setProfile] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const [sparkle, setSparkle] = useState(null);
+	const [sparkle, setSparkle] = useState(new Set());
 
 	useEffect(() => {
 		if (!user) return;
@@ -67,7 +67,7 @@ export function useGarden(user) {
 
 				if (p.water >= 5) {
 					p.finished = true;
-					setSparkle(index);
+					setSparkle((prev) => new Set(prev).add(index));
 					hapticBloom();
 
 					const XP_PER_BLOOM = 100;
@@ -119,7 +119,13 @@ export function useGarden(user) {
 		setGarden(emptyGarden(PLOTS));
 	}, []);
 
-	const clearSparkle = useCallback(() => setSparkle(null), []);
+	const clearSparkle = useCallback((index) => {
+		setSparkle((prev) => {
+			const next = new Set(prev);
+			next.delete(index);
+			return next;
+		});
+	}, []);
 
 	const reload = useCallback(async () => {
 		if (!user) return;

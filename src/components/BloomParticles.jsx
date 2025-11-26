@@ -3,8 +3,12 @@ import heartSvg from "../assets/webicon.svg";
 
 export default function BloomParticles({ onDone }) {
 	const canvas = useRef(null);
+	const hasRun = useRef(false);
 
 	useEffect(() => {
+		if (hasRun.current) return;
+		hasRun.current = true;
+
 		const ctx = canvas.current.getContext("2d");
 		const rect = canvas.current.parentElement.getBoundingClientRect();
 		canvas.current.width = rect.width;
