@@ -1,42 +1,38 @@
 import { makeBouquetAI } from "../utils/makeBouquetAI.js";
+import { Toast } from "./Toast.jsx";
 
 export const SelectionToast = ({ onCustomSelect, toast, blooms }) => {
 	return (
-		<div className={"toast"}>
-			<span className={"toast-title"}>Choose bouquet style</span>
-			<span className={"toast-text"}>
-				Do you want custom bouquet or AI generated one?
-			</span>
-			<div className={"toast-button-wrapper"}>
-				<button
-					type={"button"}
+		<Toast>
+			<Toast.Title>Choose bouquet style</Toast.Title>
+			<Toast.Text>Do you want custom bouquet or AI generated one?</Toast.Text>
+
+			<Toast.Actions>
+				<Toast.Button
 					onClick={() => {
 						onCustomSelect();
 						toast.dismiss();
 					}}
-					className={"button"}
 				>
 					Custom
-				</button>
-				<button
-					type={"button"}
+				</Toast.Button>
+
+				<Toast.Button
 					onClick={() => {
-						toast.promise(
-							async () => {
-								await makeBouquetAI(blooms);
-							},
-							{
-								loading: "Loading the image",
-								success: "Data being downloaded",
-								error: "Error getting the image",
-							},
-						);
+						toast.dismiss();
+
+						const promise = makeBouquetAI(blooms);
+
+						toast.promise(promise, {
+							loading: "Generating bouquet…",
+							success: "Your bouquet is downloading 💐",
+							error: "Failed to generate bouquet",
+						});
 					}}
-					className={"button"}
 				>
 					AI
-				</button>
-			</div>
-		</div>
+				</Toast.Button>
+			</Toast.Actions>
+		</Toast>
 	);
 };
