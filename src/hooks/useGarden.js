@@ -22,6 +22,7 @@ export function useGarden(user) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [sparkle, setSparkle] = useState(new Set());
+	const [activePlot, setActivePlot] = useState(null);
 
 	useEffect(() => {
 		if (!user) return;
@@ -160,5 +161,7 @@ export function useGarden(user) {
 		resetGarden,
 		clearSparkle,
 		reload,
+		activePlot,
+		setActivePlot,
 	};
 }

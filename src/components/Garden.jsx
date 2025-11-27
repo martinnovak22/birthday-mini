@@ -32,6 +32,8 @@ export const Garden = ({ user }) => {
 		resetGarden,
 		clearSparkle,
 		reload,
+		activePlot,
+		setActivePlot,
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -72,15 +74,26 @@ export const Garden = ({ user }) => {
 						now={now}
 						onWater={() => water(i)}
 						showParticles={sparkle.has(i)}
-						onSeedClick={() =>
+						isHighlighted={activePlot === i}
+						onSeedClick={() => {
+							setActivePlot(i);
 							toast(
 								<FlowerSelectToast
 									toast={toast}
 									flowers={FLOWERS}
-									onSelect={(flower) => plant(i, flower)}
+									onSelect={(flower) => {
+										setActivePlot(null);
+										plant(i, flower);
+									}}
 								/>,
-							)
-						}
+								{
+									id: "flower-select-toast",
+									data: {
+										onClose: () => setActivePlot(null),
+									},
+								},
+							);
+						}}
 						onParticlesDone={() => clearSparkle(i)}
 					/>
 				))}

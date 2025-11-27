@@ -1,6 +1,52 @@
+import { useEffect, useRef } from "react";
 import { ToastBar, Toaster, toast } from "react-hot-toast";
 
 export const DURATION = 3000;
+
+const ToastContent = ({ t, message }) => {
+	const timeoutRef = useRef(null);
+
+	useEffect(() => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+		if ((t.type === "success" || t.type === "error") && t.visible) {
+			timeoutRef.current = setTimeout(() => toast.dismiss(t.id), DURATION);
+		}
+		else if (t.data?.onClose && t.visible) {
+			timeoutRef.current = setTimeout(() => {
+				t.data.onClose();
+				toast.dismiss(t.id);
+			}, DURATION);
+		}
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+			}
+		};
+	}, [t.id, t.type, t.visible, t.data]);
+
+	const handleClose = () => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+		if (t.data?.onClose) {
+			t.data.onClose();
+		}
+		toast.dismiss(t.id);
+	};
+
+	return (
+		<>
+			{message}
+			{!["success", "error", "loading"].includes(t.type) && (
+				<button type="button" className="x-button" onClick={handleClose}>
+					×
+				</button>
+			)}
+		</>
+	);
+};
 
 export const ToastProvider = () => {
 	return (
@@ -8,27 +54,13 @@ export const ToastProvider = () => {
 			{(t) => (
 				<ToastBar
 					toast={t}
-					style={{ backgroundColor: "var(--green-400)", padding: "10px 0" }}
-				>
-					{({ message }) => {
-						if ((t.type === "success" || t.type === "error") && t.visible) {
-							setTimeout(() => toast.dismiss(t.id), DURATION);
-						}
-						return (
-							<>
-								{message}
-								{!["success", "error", "loading"].includes(t.type) && (
-									<button
-										type="button"
-										className="x-button"
-										onClick={() => toast.dismiss(t.id)}
-									>
-										×
-									</button>
-								)}
-							</>
-						);
+					style={{
+						backgroundColor: "var(--green-400)",
+						padding: 0,
+						margin: 0,
 					}}
+				>
+					{({ message }) => <ToastContent t={t} message={message} />}
 				</ToastBar>
 			)}
 		</Toaster>
