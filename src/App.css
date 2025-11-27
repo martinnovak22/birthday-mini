@@ -4,6 +4,7 @@
 	justify-content: center;
 	height: 100dvh;
 }
+
 .background {
 	display: flex;
 	bottom: 0;
@@ -15,6 +16,7 @@
 	position: fixed;
 	background: url("assets/grass.png") repeat-x center bottom;
 }
+
 .app {
 	display: flex;
 	flex-direction: column;
@@ -22,6 +24,7 @@
 	padding: 15px 20px 20px;
 	width: 100%;
 }
+
 .header {
 	width: 100%;
 	display: flex;
@@ -29,6 +32,7 @@
 	align-items: center;
 	padding: 0 0 10px;
 }
+
 .menu-toggle {
 	position: absolute;
 	left: 20px;
@@ -38,6 +42,7 @@
 	background: none;
 	font-size: 26px;
 }
+
 .side-menu {
 	position: fixed;
 	top: 0;
@@ -51,9 +56,11 @@
 	transition: left 0.3s ease;
 	background-color: var(--bg);
 }
+
 .side-menu.open {
 	left: 0;
 }
+
 .side-menu .close-btn {
 	background: transparent;
 	border: none;
@@ -63,28 +70,47 @@
 	position: absolute;
 	right: 10px;
 }
+
 .ground {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 1rem;
 	height: 100%;
 }
+
 .plot {
-	background: #654321;
-	border-radius: 8px;
+	background: url("./assets/dirt_plot.png");
+	background-size: cover;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 	position: relative;
 	cursor: pointer;
 	transform-style: preserve-3d;
 	transition: transform 0.15s;
 	border: none;
+	border-radius: 16px;
+	border-bottom: 8px solid #201817;
+	border-right: 6px solid #201817;
 	padding: 0;
 }
+
+.plot:active {
+	transform: translateY(4px);
+}
+
+.plot.highlight {
+	box-shadow: 0 0 15px var(--green-600);
+}
+
+.plot.highlight {
+	transition: box-shadow 0.2s ease-out;
+}
+
 .plot:hover {
 	cursor:
 		url("./assets/drop.svg") 12 12,
 		auto;
 }
+
 .plot:not(:disabled):hover {
 	cursor:
 		url("./assets/drop.svg") 12 12,
@@ -98,15 +124,18 @@
 	align-items: center;
 	height: 72px;
 }
+
 .emoji {
 	font-size: 32px;
 	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
 }
+
 .bloom {
 	font-size: 72px;
 }
+
 .icon-image {
-	width: 48px;
+	width: 60px;
 }
 
 /*Water styles*/
@@ -120,6 +149,7 @@
 	border-radius: 4px;
 	overflow: hidden;
 }
+
 .water-bar div {
 	height: 100%;
 	transition: width 0.2s;
@@ -143,6 +173,7 @@
 	justify-content: space-evenly;
 	margin: 18px 0;
 }
+
 .button {
 	padding: 0.6em 1.2em;
 	border: 1px solid var(--green-400);
@@ -151,16 +182,6 @@
 	color: var(--green-400);
 	font-weight: 600;
 	cursor: pointer;
-}
-
-.x-button {
-	position: absolute;
-	right: 0;
-	top: 0;
-	margin: 4px 2px;
-	border: none;
-	background: none;
-	font-size: 24px;
 }
 
 .button:disabled {
@@ -184,6 +205,7 @@
 	pointer-events: none;
 	border-radius: inherit;
 }
+
 .loader {
 	width: 60px;
 	aspect-ratio: 1;
@@ -194,6 +216,7 @@
 	animation: l6 2s infinite linear;
 	position: relative;
 }
+
 .loader:before {
 	content: "";
 	position: absolute;
@@ -201,11 +224,10 @@
 	inset: auto calc(50% - 10px) 100%;
 	border-radius: 5px 5px 0 0;
 	background:
-		linear-gradient(to bottom, currentColor 0%, currentColor 30%) top left /
-		100% 30% no-repeat,
-		linear-gradient(to bottom, currentColor 0%, currentColor 100%) top left /
-		50% 100%;
+		linear-gradient(to bottom, currentColor 0%, currentColor 30%) top left / 100% 30% no-repeat,
+		linear-gradient(to bottom, currentColor 0%, currentColor 100%) top left / 50% 100%;
 }
+
 .loader:after {
 	content: "";
 	position: absolute;
@@ -216,32 +238,41 @@
 		radial-gradient(farthest-side, currentColor 94%, #0000) right no-repeat;
 	background-size: 15px 15px;
 }
+
 /*CSS animation*/
 @keyframes l6 {
 	0% {
 		background-image: conic-gradient(#77a4bd 0, #0000 0);
 	}
+
 	12.5% {
 		background-image: conic-gradient(#77a4bd 45deg, #0000 46deg);
 	}
+
 	25% {
 		background-image: conic-gradient(#77a4bd 90deg, #0000 91deg);
 	}
+
 	37.5% {
 		background-image: conic-gradient(#77a4bd 135deg, #0000 136deg);
 	}
+
 	50% {
 		background-image: conic-gradient(#77a4bd 180deg, #0000 181deg);
 	}
+
 	62.5% {
 		background-image: conic-gradient(#77a4bd 225deg, #0000 226deg);
 	}
+
 	75% {
 		background-image: conic-gradient(#77a4bd 270deg, #0000 271deg);
 	}
+
 	87.5% {
 		background-image: conic-gradient(#77a4bd 315deg, #0000 316deg);
 	}
+
 	100% {
 		background-image: conic-gradient(#77a4bd 360deg, #0000 360deg);
 	}
@@ -253,6 +284,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding-bottom: 8px;
+	font-weight: 500;
 }
 
 .toast-button-wrapper {
@@ -268,8 +301,8 @@
 }
 
 .toast-flower-button {
-	width: 100px;
-	height: 80px;
+	width: 90px;
+	height: 70px;
 }
 
 .toast-flower {
@@ -278,12 +311,27 @@
 
 .toast-title {
 	font-size: 18px;
-	margin-bottom: 4px;
+	margin-bottom: 8px;
+	margin-top: 4px;
 	color: black;
 }
+
 .toast-text {
 	font-size: 14px;
 	margin-bottom: 8px;
+}
+
+.toast.flower-select-toast {
+	width: 320px;
+}
+
+.x-button {
+	position: absolute;
+	right: 4px;
+	top: 5px;
+	border: none;
+	background: none;
+	font-size: 24px;
 }
 
 /*User style*/
