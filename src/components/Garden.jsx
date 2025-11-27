@@ -35,10 +35,12 @@ export const Garden = ({ user }) => {
 		reload,
 		activePlot,
 		setActivePlot,
+		isAdmin,
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [now, setNow] = useState(Date.now());
+	const [adminCheatOn, setAdminCheatOn] = useState(false);
 
 	useSwipe({
 		onSwipeLeft: () => setMenuOpen(false),
@@ -100,6 +102,7 @@ export const Garden = ({ user }) => {
 							);
 						}}
 						onParticlesDone={() => clearSparkle(i)}
+						cheatOn={adminCheatOn}
 					/>
 				))}
 			</section>
@@ -111,6 +114,9 @@ export const Garden = ({ user }) => {
 				garden={garden}
 				onReset={resetGarden}
 				toast={toast}
+				isAdmin={isAdmin}
+				adminCheatOn={adminCheatOn}
+				setAdminCheatOn={setAdminCheatOn}
 			/>
 		</>
 	);

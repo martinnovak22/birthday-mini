@@ -157,5 +157,6 @@ export function useGarden(user) {
 		reload,
 		activePlot,
 		setActivePlot,
+		isAdmin: profile?.role === "admin",
 	};
 }

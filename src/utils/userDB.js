@@ -12,6 +12,7 @@ export async function loadUserProfile(uid) {
 			xpToNextLevel: 500,
 			blooms: 0,
 			lastUpdated: Date.now(),
+			role: "user",
 		};
 		await setDoc(ref, initial);
 		return initial;

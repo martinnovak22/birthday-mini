@@ -3,12 +3,20 @@ import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
 
-const waterToTimeMap = {
+const normalWaterToTimeMap = {
+	1: 1,
+	2: 5,
+	3: 10,
+	4: 15,
+	5: 30,
+};
+
+const cheatWaterToTimeMap = {
 	1: 1,
 	2: 1,
 	3: 1,
 	4: 1,
-	5: 10,
+	5: 1,
 };
 
 const waterToSizeMap = {
@@ -27,7 +35,9 @@ function Plot({
 	now,
 	showParticles,
 	isHighlighted,
+	cheatOn,
 }) {
+	const waterToTimeMap = cheatOn ? cheatWaterToTimeMap : normalWaterToTimeMap;
 	const remaining = Math.max(
 		0,
 		waterToTimeMap[water] - (now - lastWatered) / 1000,

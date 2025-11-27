@@ -13,10 +13,15 @@ export const SideMenu = ({
 	garden,
 	onReset,
 	toast,
+	isAdmin,
+	adminCheatOn,
+	setAdminCheatOn,
 }) => {
 	const blooms = garden ? garden.filter((p) => p.water === 5) : [];
 	const hasStarted = garden ? garden.some((p) => p.water >= 0) : false;
 	const allFinished = garden ? garden.every((p) => !p.finished) : true;
+
+	const name = isAdmin ? `⭐ ${user.displayName}` : user.displayName;
 
 	return (
 		<>
@@ -34,7 +39,19 @@ export const SideMenu = ({
 				<button type={"button"} className={"close-btn"} onClick={onClose}>
 					×
 				</button>
-				<User profile={profile} name={user.displayName} />
+				<User profile={profile} name={name} />
+				{isAdmin ? (
+					<label className={"checkbox-wrapper"}>
+						<span>Admin speed</span>
+						<input
+							type={"checkbox"}
+							id={"cheat"}
+							value={adminCheatOn}
+							onChange={(e) => setAdminCheatOn(e.target.checked)}
+						/>
+						<span className={"checkbox-box"} />
+					</label>
+				) : null}
 				<button
 					type={"button"}
 					className={"button"}
@@ -75,7 +92,6 @@ export const SideMenu = ({
 				>
 					Download bouquet
 				</button>
-
 				<button
 					type={"button"}
 					className={"button"}
