@@ -43,40 +43,38 @@ function Plot({
 	};
 	return (
 		<button
-			type="button"
+			type={"button"}
 			className={`plot ${isHighlighted ? "highlight" : ""}`}
 			onClick={handleClick}
 			disabled={disabled}
 		>
-			<div className="flower-wrapper">
+			<div className={"flower-wrapper"}>
 				{water === -1 && (
 					<img src={plus} alt={"seed"} className={"icon-image"} />
 				)}
 				{water === 0 && (
 					<img src={seed} alt={"seed"} className={"icon-image"} />
 				)}
-				{water === 1 && <span className="emoji seed">🌱</span>}
+				{water === 1 && <span className={"emoji seed"}>🌱</span>}
 				{water >= 2 && water < 5 && (
-					<span className="emoji" style={{ fontSize: waterToSizeMap[water] }}>
+					<span className={"emoji"} style={{ fontSize: waterToSizeMap[water] }}>
 						🌿
 					</span>
 				)}
-				{water === 5 && (
-					<span className="emoji bloom">{flower}</span>
-				)}
+				{water === 5 && <span className={"emoji bloom"}>{flower}</span>}
 			</div>
 
 			{showParticles && remaining === 0 && (
 				<BloomParticles onDone={onParticlesDone} />
 			)}
 
-			<div className="water-bar">
+			<div className={"water-bar"}>
 				<div style={{ width: water === -1 ? "0%" : `${(water / 5) * 100}%` }} />
 			</div>
 
 			{disabled && (
-				<div className="cooldown">
-					<div className="loader" />
+				<div className={"cooldown"}>
+					<div className={"loader"} />
 					{Math.floor(remaining)}s
 				</div>
 			)}

@@ -11,7 +11,6 @@ import {
 	calculateProgression,
 	levelUp,
 	loadUserProfile,
-	xpRequiredForLevel,
 } from "../utils/userDB.js";
 
 const PLOTS = 9;
@@ -83,13 +82,8 @@ export function useGarden(user) {
 						updated.blooms += 1;
 						updated.xp = (updated.xp || 0) + XP_PER_BLOOM;
 
-						const {
-							level,
-							xp,
-							xpToNextLevel,
-							deduction,
-							leveledUp,
-						} = calculateProgression(updated);
+						const { level, xp, xpToNextLevel, deduction, leveledUp } =
+							calculateProgression(updated);
 
 						updated.level = level;
 						updated.xp = xp;

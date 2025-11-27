@@ -19,11 +19,11 @@ function App() {
 	}, []);
 
 	return (
-		<main className="app">
+		<main className={"app"}>
 			<ToastProvider />
 			<div className={"background"} />
 
-			{loadingUser ? <span className="text">Loading user…</span> : null}
+			{loadingUser ? <span className={"text"}>Loading user…</span> : null}
 			{!loadingUser && !user ? <Welcome /> : null}
 			{!loadingUser && user ? <Garden user={user} /> : null}
 		</main>

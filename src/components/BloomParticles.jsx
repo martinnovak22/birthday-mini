@@ -64,5 +64,5 @@ export default function BloomParticles({ onDone }) {
 		return () => cancelAnimationFrame(rid);
 	}, []);
 
-	return <canvas ref={canvas} className="particles" />;
+	return <canvas ref={canvas} className={"particles"} />;
 }

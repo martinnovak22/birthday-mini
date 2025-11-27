@@ -3,7 +3,7 @@ import { XPProgressBar } from "./XPProgressBar.jsx";
 export const User = ({ profile, name }) => {
 	return (
 		<div className={"user-info"}>
-			<h3 className={"user-text"}>{name}</h3>
+			<h4 className={"user-text"}>{name}</h4>
 			<XPProgressBar
 				currentXP={profile?.xp}
 				xpToNextLevel={profile?.xpToNextLevel}

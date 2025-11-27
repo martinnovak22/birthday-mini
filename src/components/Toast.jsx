@@ -12,8 +12,7 @@ const ToastContent = ({ t, message }) => {
 		}
 		if ((t.type === "success" || t.type === "error") && t.visible) {
 			timeoutRef.current = setTimeout(() => toast.dismiss(t.id), DURATION);
-		}
-		else if (t.data?.onClose && t.visible) {
+		} else if (t.data?.onClose && t.visible) {
 			timeoutRef.current = setTimeout(() => {
 				t.data.onClose();
 				toast.dismiss(t.id);
@@ -40,7 +39,7 @@ const ToastContent = ({ t, message }) => {
 		<>
 			{message}
 			{!["success", "error", "loading"].includes(t.type) && (
-				<button type="button" className="x-button" onClick={handleClose}>
+				<button type={"button"} className={"x-button"} onClick={handleClose}>
 					×
 				</button>
 			)}
@@ -85,7 +84,7 @@ Toast.Actions = ({ children, className = "" }) => (
 
 Toast.Button = ({ children, onClick, className = "", ...props }) => (
 	<button
-		type="button"
+		type={"button"}
 		className={`button ${className}`}
 		onClick={onClick}
 		{...props}
@@ -100,11 +99,11 @@ Toast.Flowers = ({ children, className = "" }) => (
 
 Toast.FlowerButton = ({ children, onClick, className = "", ...props }) => (
 	<button
-		type="button"
+		type={"button"}
 		className={`button toast-flower-button ${className}`}
 		onClick={onClick}
 		{...props}
 	>
-		<span className="toast-flower">{children}</span>
+		<span className={"toast-flower"}>{children}</span>
 	</button>
 );

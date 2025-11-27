@@ -71,7 +71,7 @@ export const Garden = ({ user }) => {
 				</button>
 				<h1>Cute little garden</h1>
 			</div>
-			<section className="ground">
+			<section className={"ground"}>
 				{garden.map((plot, i) => (
 					<Plot
 						key={i.toString()}

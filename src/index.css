@@ -42,10 +42,15 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
 	line-height: 1.2;
 	color: var(--green-400);
 	margin: 0;
+}
+
+h1 {
+	font-size: 24px;
 }
 
 .screen {
@@ -57,13 +62,13 @@ h3 {
 }
 
 .title {
-	color: var(--green-400);
-	border: none;
+	line-height: 1.4;
+	margin-bottom: 8px;
 }
 
 .text {
 	color: var(--green-400);
-	margin-bottom: 18px;
+	margin-bottom: 8px;
 }
 
 .image {
