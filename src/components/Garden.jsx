@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGarden } from "../hooks/useGarden.js";
+import { useSwipe } from "../hooks/useSwipe.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import Plot from "./Plot.jsx";
@@ -38,6 +39,10 @@ export const Garden = ({ user }) => {
 
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [now, setNow] = useState(Date.now());
+
+	useSwipe({
+		onSwipeLeft: () => setMenuOpen(false),
+	});
 
 	useEffect(() => {
 		const id = setInterval(() => setNow(Date.now()), 1000);
