@@ -8,6 +8,7 @@ import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import {
 	addBloom,
 	addXP,
+	calculateProgression,
 	levelUp,
 	loadUserProfile,
 	xpRequiredForLevel,
@@ -81,13 +82,20 @@ export function useGarden(user) {
 						updated.blooms += 1;
 						updated.xp = (updated.xp || 0) + XP_PER_BLOOM;
 
-						// Check for level up
-						if (updated.xp >= updated.xpToNextLevel) {
-							// Carry over excess XP
-							updated.xp -= updated.xpToNextLevel;
-							updated.level += 1;
-							updated.xpToNextLevel = xpRequiredForLevel(updated.level);
-							levelUp(user.uid, updated.level);
+						const {
+							level,
+							xp,
+							xpToNextLevel,
+							deduction,
+							leveledUp,
+						} = calculateProgression(updated);
+
+						updated.level = level;
+						updated.xp = xp;
+						updated.xpToNextLevel = xpToNextLevel;
+
+						if (leveledUp) {
+							levelUp(user.uid, updated.level, deduction);
 						}
 
 						return updated;
