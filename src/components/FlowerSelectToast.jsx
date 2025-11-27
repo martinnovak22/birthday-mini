@@ -2,7 +2,7 @@ import { Toast } from "./Toast.jsx";
 
 export const FlowerSelectToast = ({ toast, flowers, onSelect }) => {
 	return (
-		<Toast>
+		<Toast className={"flower-select-toast"}>
 			<Toast.Title>Choose your flower</Toast.Title>
 			<Toast.Flowers>
 				{flowers.map((f) => (

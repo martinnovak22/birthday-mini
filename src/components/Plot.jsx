@@ -26,6 +26,7 @@ function Plot({
 	onSeedClick,
 	now,
 	showParticles,
+	isHighlighted,
 }) {
 	const remaining = Math.max(
 		0,
@@ -43,7 +44,7 @@ function Plot({
 	return (
 		<button
 			type="button"
-			className="plot"
+			className={`plot ${isHighlighted ? "highlight" : ""}`}
 			onClick={handleClick}
 			disabled={disabled}
 		>
