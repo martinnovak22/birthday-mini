@@ -37,17 +37,30 @@
 	position: absolute;
 	left: 20px;
 	border: none;
-
 	color: var(--green-400);
 	background: none;
 	font-size: 26px;
+	cursor: pointer;
+}
+
+.menu-overlay {
+	position: fixed;
+	inset: 0;
+	border: none;
+	opacity: 0;
+	transition: opacity 1.5s ease;
+	background-color: var(--bg);
+}
+
+.menu-overlay.open {
+	opacity: 0.4;
 }
 
 .side-menu {
 	position: fixed;
 	top: 0;
 	width: 260px;
-	left: -300px;
+	left: -301px;
 	height: 100vh;
 	padding: 20px;
 	display: flex;
@@ -55,6 +68,7 @@
 	gap: 20px;
 	transition: left 0.3s ease;
 	background-color: var(--bg);
+	border-right: 1px solid var(--green-400);
 }
 
 .side-menu.open {
@@ -224,8 +238,10 @@
 	inset: auto calc(50% - 10px) 100%;
 	border-radius: 5px 5px 0 0;
 	background:
-		linear-gradient(to bottom, currentColor 0%, currentColor 30%) top left / 100% 30% no-repeat,
-		linear-gradient(to bottom, currentColor 0%, currentColor 100%) top left / 50% 100%;
+		linear-gradient(to bottom, currentColor 0%, currentColor 30%) top left /
+		100% 30% no-repeat,
+		linear-gradient(to bottom, currentColor 0%, currentColor 100%) top left /
+		50% 100%;
 }
 
 .loader:after {
