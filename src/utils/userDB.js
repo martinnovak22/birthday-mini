@@ -8,6 +8,8 @@ export async function loadUserProfile(uid) {
 	if (!snap.exists()) {
 		const initial = {
 			level: 1,
+			xp: 0,
+			xpToNextLevel: 500,
 			blooms: 0,
 			lastUpdated: Date.now(),
 		};
@@ -15,7 +17,37 @@ export async function loadUserProfile(uid) {
 		return initial;
 	}
 
-	return snap.data();
+	let data = snap.data();
+	const { level, xp, xpToNextLevel, leveledUp } = calculateProgression(data);
+
+	if (leveledUp) {
+		data = { ...data, level, xp, xpToNextLevel };
+		await updateDoc(ref, {
+			level,
+			xp,
+			xpToNextLevel,
+			lastUpdated: Date.now(),
+		});
+	}
+
+	console.log(data);
+	return data;
+}
+
+export function calculateProgression(current) {
+	let { level, xp, xpToNextLevel } = current;
+	let deduction = 0;
+	let leveledUp = false;
+
+	while (xp >= xpToNextLevel) {
+		deduction += xpToNextLevel;
+		xp -= xpToNextLevel;
+		level += 1;
+		xpToNextLevel = xpRequiredForLevel(level);
+		leveledUp = true;
+	}
+
+	return { level, xp, xpToNextLevel, deduction, leveledUp };
 }
 
 export async function addBloom(uid) {
@@ -26,14 +58,25 @@ export async function addBloom(uid) {
 	});
 }
 
-export async function levelUp(uid) {
+export async function addXP(uid, amount) {
 	const ref = doc(db, "users", uid);
 	await updateDoc(ref, {
-		level: increment(1),
+		xp: increment(amount),
 		lastUpdated: Date.now(),
 	});
 }
 
-export function bloomsRequiredFor(level) {
-	return 1 + (level - 1) * 2;
+export async function levelUp(uid, newLevel, deduction) {
+	const ref = doc(db, "users", uid);
+	const newXpRequired = xpRequiredForLevel(newLevel);
+	await updateDoc(ref, {
+		level: newLevel,
+		xpToNextLevel: newXpRequired,
+		xp: increment(-deduction),
+		lastUpdated: Date.now(),
+	});
+}
+
+export function xpRequiredForLevel(level) {
+	return 500 + (level - 1) * 100;
 }

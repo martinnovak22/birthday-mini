@@ -3,8 +3,17 @@ import heartSvg from "../assets/webicon.svg";
 
 export default function BloomParticles({ onDone }) {
 	const canvas = useRef(null);
+	const hasRun = useRef(false);
+	const onDoneRef = useRef(onDone);
 
 	useEffect(() => {
+		onDoneRef.current = onDone;
+	}, [onDone]);
+
+	useEffect(() => {
+		if (hasRun.current) return;
+		hasRun.current = true;
+
 		const ctx = canvas.current.getContext("2d");
 		const rect = canvas.current.parentElement.getBoundingClientRect();
 		canvas.current.width = rect.width;
@@ -47,13 +56,13 @@ export default function BloomParticles({ onDone }) {
 					}
 				}
 				if (live) rid = requestAnimationFrame(animate);
-				else onDone();
+				else onDoneRef.current();
 			}
 			animate();
 		};
 
 		return () => cancelAnimationFrame(rid);
-	}, [onDone]);
+	}, []);
 
 	return <canvas ref={canvas} className="particles" />;
 }

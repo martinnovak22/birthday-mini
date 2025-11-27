@@ -1,146 +1,164 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-    emptyGarden,
-    loadGardenFromDB,
-    saveGardenToDB,
+	emptyGarden,
+	loadGardenFromDB,
+	saveGardenToDB,
 } from "../utils/gardenDB.js";
-import {
-    addBloom,
-    bloomsRequiredFor,
-    levelUp,
-    loadUserProfile,
-} from "../utils/userDB.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
+import {
+	addBloom,
+	addXP,
+	calculateProgression,
+	levelUp,
+	loadUserProfile,
+	xpRequiredForLevel,
+} from "../utils/userDB.js";
 
 const PLOTS = 9;
 
 export function useGarden(user) {
-    const [garden, setGarden] = useState(null);
-    const [profile, setProfile] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [sparkle, setSparkle] = useState(null);
+	const [garden, setGarden] = useState(null);
+	const [profile, setProfile] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const [sparkle, setSparkle] = useState(new Set());
 
-    // Load data
-    useEffect(() => {
-        if (!user) return;
+	useEffect(() => {
+		if (!user) return;
 
-        (async () => {
-            setIsLoading(true);
-            try {
-                const [gardenData, profileData] = await Promise.all([
-                    loadGardenFromDB(user.uid, PLOTS),
-                    loadUserProfile(user.uid),
-                ]);
-                setGarden(gardenData);
-                setProfile(profileData);
-                setError(null);
-            } catch (err) {
-                console.error("Load failed", err);
-                setError("Garden failed to load");
-            } finally {
-                setIsLoading(false);
-            }
-        })();
-    }, [user]);
+		(async () => {
+			setIsLoading(true);
+			try {
+				const [gardenData, profileData] = await Promise.all([
+					loadGardenFromDB(user.uid, PLOTS),
+					loadUserProfile(user.uid),
+				]);
+				setGarden(gardenData);
+				setProfile(profileData);
+				setError(null);
+			} catch (err) {
+				console.error("Load failed", err);
+				setError("Garden failed to load");
+			} finally {
+				setIsLoading(false);
+			}
+		})();
+	}, [user]);
 
-    // Save garden on change
-    useEffect(() => {
-        if (!user || !garden) return;
-        saveGardenToDB(user.uid, garden);
-    }, [user, garden]);
+	useEffect(() => {
+		if (!user || !garden) return;
+		saveGardenToDB(user.uid, garden);
+	}, [user, garden]);
 
-    const water = useCallback(
-        (index) => {
-            setGarden((prev) => {
-                if (!prev) return prev;
+	const water = useCallback(
+		(index) => {
+			setGarden((prev) => {
+				if (!prev) return prev;
 
-                const now = Date.now();
-                const next = [...prev];
-                const prevPlot = next[index];
+				const now = Date.now();
+				const next = [...prev];
+				const prevPlot = next[index];
 
-                hapticTap();
+				hapticTap();
 
-                const p = { ...prevPlot, lastWatered: now };
-                if (p.finished) return prev;
+				const p = { ...prevPlot, lastWatered: now };
+				if (p.finished) return prev;
 
-                p.water = Math.min(p.water + 1, 5);
+				p.water = Math.min(p.water + 1, 5);
 
-                if (p.water >= 5) {
-                    p.finished = true;
-                    setSparkle(index);
-                    hapticBloom();
+				if (p.water >= 5) {
+					p.finished = true;
+					setSparkle((prev) => new Set(prev).add(index));
+					hapticBloom();
 
-                    addBloom(user.uid);
+					const XP_PER_BLOOM = 100;
+					addBloom(user.uid);
+					addXP(user.uid, XP_PER_BLOOM);
 
-                    setProfile((prevProfile) => {
-                        if (!prevProfile) return prevProfile;
+					setProfile((prevProfile) => {
+						if (!prevProfile) return prevProfile;
 
-                        const updated = { ...prevProfile };
-                        updated.blooms += 1;
+						const updated = { ...prevProfile };
+						updated.blooms += 1;
+						updated.xp = (updated.xp || 0) + XP_PER_BLOOM;
 
-                        const required = bloomsRequiredFor(updated.level);
+						const {
+							level,
+							xp,
+							xpToNextLevel,
+							deduction,
+							leveledUp,
+						} = calculateProgression(updated);
 
-                        if (updated.blooms >= required) {
-                            updated.level += 1;
-                            levelUp(user.uid);
-                        }
+						updated.level = level;
+						updated.xp = xp;
+						updated.xpToNextLevel = xpToNextLevel;
 
-                        return updated;
-                    });
-                }
+						if (leveledUp) {
+							levelUp(user.uid, updated.level, deduction);
+						}
 
-                next[index] = p;
-                return next;
-            });
-        },
-        [user?.uid],
-    );
+						return updated;
+					});
+				}
 
-    const plant = useCallback((index, flower) => {
-        setGarden((prev) => {
-            const next = [...prev];
-            next[index] = {
-                ...next[index],
-                water: 0,
-                flower,
-                finished: false,
-                lastWatered: Date.now(),
-            };
-            return next;
-        });
-    }, []);
+				next[index] = p;
+				return next;
+			});
+		},
+		[user?.uid],
+	);
 
-    const resetGarden = useCallback(() => {
-        setGarden(emptyGarden(PLOTS));
-    }, []);
+	const plant = useCallback((index, flower) => {
+		setGarden((prev) => {
+			const next = [...prev];
+			next[index] = {
+				...next[index],
+				water: 0,
+				flower,
+				finished: false,
+				lastWatered: Date.now(),
+			};
+			return next;
+		});
+	}, []);
 
-    const clearSparkle = useCallback(() => setSparkle(null), []);
+	const resetGarden = useCallback(() => {
+		setGarden(emptyGarden(PLOTS));
+	}, []);
 
-    const reload = useCallback(async () => {
-        if (!user) return;
-        setIsLoading(true);
-        try {
-            const data = await loadGardenFromDB(user.uid, PLOTS);
-            setGarden(data);
-            setError(null);
-        } catch (e) {
-            setError("Failed to reload");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [user]);
+	const clearSparkle = useCallback((index) => {
+		setSparkle((prev) => {
+			const next = new Set(prev);
+			next.delete(index);
+			return next;
+		});
+	}, []);
 
-    return {
-        garden,
-        profile,
-        isLoading,
-        error,
-        sparkle,
-        water,
-        plant,
-        resetGarden,
-        clearSparkle,
-        reload
-    };
+	const reload = useCallback(async () => {
+		if (!user) return;
+		setIsLoading(true);
+		try {
+			const data = await loadGardenFromDB(user.uid, PLOTS);
+			setGarden(data);
+			setError(null);
+		} catch {
+			setError("Failed to reload");
+		} finally {
+			setIsLoading(false);
+		}
+	}, [user]);
+
+	return {
+		garden,
+		profile,
+		isLoading,
+		error,
+		sparkle,
+		water,
+		plant,
+		resetGarden,
+		clearSparkle,
+		reload,
+	};
 }

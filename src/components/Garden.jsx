@@ -71,7 +71,7 @@ export const Garden = ({ user }) => {
 						{...plot}
 						now={now}
 						onWater={() => water(i)}
-						showParticles={sparkle === i}
+						showParticles={sparkle.has(i)}
 						onSeedClick={() =>
 							toast(
 								<FlowerSelectToast
@@ -81,7 +81,7 @@ export const Garden = ({ user }) => {
 								/>,
 							)
 						}
-						onParticlesDone={clearSparkle}
+						onParticlesDone={() => clearSparkle(i)}
 					/>
 				))}
 			</section>
