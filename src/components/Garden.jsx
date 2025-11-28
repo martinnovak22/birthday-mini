@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGarden } from "../hooks/useGarden.js";
 import { useSwipe } from "../hooks/useSwipe.js";
@@ -39,17 +39,11 @@ export const Garden = ({ user }) => {
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [now, setNow] = useState(Date.now());
 	const [adminCheatOn, setAdminCheatOn] = useState(false);
 
 	useSwipe({
 		onSwipeLeft: () => setMenuOpen(false),
 	});
-
-	useEffect(() => {
-		const id = setInterval(() => setNow(Date.now()), 1000);
-		return () => clearInterval(id);
-	}, []);
 
 	if (isLoading) {
 		return <span className="text">Loading garden…</span>;
@@ -78,7 +72,6 @@ export const Garden = ({ user }) => {
 					<Plot
 						key={i.toString()}
 						{...plot}
-						now={now}
 						onWater={() => water(i)}
 						showParticles={sparkle.has(i)}
 						isHighlighted={activePlot === i}

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
@@ -32,17 +32,32 @@ function Plot({
 	onParticlesDone,
 	lastWatered,
 	onSeedClick,
-	now,
 	showParticles,
 	isHighlighted,
 	cheatOn,
 }) {
+	const [now, setNow] = useState(Date.now());
 	const waterToTimeMap = cheatOn ? cheatWaterToTimeMap : normalWaterToTimeMap;
-	const remaining = Math.max(
-		0,
-		waterToTimeMap[water] - (now - lastWatered) / 1000,
-	);
+
+	const effectiveNow = Math.max(now, lastWatered);
+	const duration = waterToTimeMap[water] || 0;
+	const expiry = lastWatered + duration * 1000;
+	const remaining = Math.max(0, (expiry - effectiveNow) / 1000);
 	const disabled = remaining > 0;
+
+	useEffect(() => {
+		if (!disabled) return;
+
+		const id = setInterval(() => {
+			const current = Date.now();
+			setNow(current);
+			if (current >= expiry) {
+				clearInterval(id);
+			}
+		}, 100);
+
+		return () => clearInterval(id);
+	}, [disabled, expiry]);
 
 	const handleClick = () => {
 		if (water === -1) {
@@ -85,7 +100,7 @@ function Plot({
 			{disabled && (
 				<div className={"cooldown"}>
 					<div className={"loader"} />
-					{Math.floor(remaining)}s
+					{Math.ceil(remaining)}s
 				</div>
 			)}
 		</button>
