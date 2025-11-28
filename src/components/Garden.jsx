@@ -4,6 +4,7 @@ import { useGarden } from "../hooks/useGarden.js";
 import { useSwipe } from "../hooks/useSwipe.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
+import { Loading } from "./Loading.jsx";
 import Plot from "./Plot.jsx";
 import { SideMenu } from "./SideMenu.jsx";
 
@@ -46,7 +47,7 @@ export const Garden = ({ user }) => {
 	});
 
 	if (isLoading) {
-		return <span className="text">Loading garden…</span>;
+		return <Loading title={"Loading garden…"} />;
 	}
 
 	if (error) {

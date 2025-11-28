@@ -1,8 +1,10 @@
 export const Loading = ({ title }) => {
 	return (
 		<div className={"screen"}>
-			<span className={"loader"}></span>
-			<span className={"text"}>{title}</span>
+			<div className={"loading"}>
+				<span className={"loader"}></span>
+				<h4>{title}</h4>
+			</div>
 		</div>
 	);
 };

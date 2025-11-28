@@ -50,6 +50,10 @@ h4 {
 	margin: 0;
 }
 
+span {
+	color: var(--green-400);
+}
+
 h1 {
 	font-size: 24px;
 }
@@ -63,22 +67,33 @@ h1 {
 }
 
 .title {
-	line-height: 1.4;
-	margin-bottom: 8px;
-}
-
-.text {
-	color: var(--green-400);
-	margin-bottom: 8px;
+	line-height: 1.6;
+	letter-spacing: -0.33px;
 }
 
 .image {
 	width: 220px;
 }
 
+.screen .icon {
+	font-size: 60px;
+	line-height: 70px;
+}
+
+.screen .button {
+	margin-top: 18px;
+}
+
 button {
 	outline: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.loading {
+	display: flex;
+	column-gap: 14px;
+	justify-content: center;
+	align-items: center;
 }
 
 .loader {
@@ -95,6 +110,14 @@ button {
 	animation: spinx 5s linear infinite;
 	zoom: 0.7;
 }
+.screen .loader {
+	zoom: 0.4;
+}
+
+/*.screen .title {*/
+/*	margin-bottom: 10px;*/
+/*}*/
+
 .loader:before,
 .loader:after {
 	content: "";
