@@ -32,6 +32,7 @@
 	align-items: center;
 	padding: 0 0 10px;
 }
+
 /*Menu styles*/
 .menu-toggle {
 	position: absolute;
@@ -129,11 +130,11 @@
 	transform: scale(0.5);
 }
 
-.checkbox-wrapper input:checked + .checkbox-box::after {
+.checkbox-wrapper input:checked+.checkbox-box::after {
 	opacity: 1;
 }
 
-.checkbox-wrapper input:checked + .checkbox-box {
+.checkbox-wrapper input:checked+.checkbox-box {
 	box-shadow: 0 0 10px rgba(114, 156, 101, 0.6);
 }
 
@@ -235,12 +236,6 @@
 }
 
 /*Button style*/
-.button-wrapper {
-	display: flex;
-	justify-content: space-evenly;
-	margin: 18px 0;
-}
-
 .button {
 	padding: 0.6em 1.2em;
 	border: 1px solid var(--green-400);
@@ -350,7 +345,8 @@
 
 .toast-flower {
 	font-size: 52px;
-	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33); /* same as blooms */
+	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
+	/* same as blooms */
 	pointer-events: none;
 }
 

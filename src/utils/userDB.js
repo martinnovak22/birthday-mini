@@ -1,4 +1,4 @@
-import { doc, getDoc, increment, runTransaction, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 export async function loadUserProfile(uid) {
@@ -77,33 +77,6 @@ export async function processBloom(uid, xpAmount) {
 
 		transaction.update(ref, updatedData);
 		return updatedData;
-	});
-}
-
-export async function addBloom(uid) {
-	const ref = doc(db, "users", uid);
-	await updateDoc(ref, {
-		blooms: increment(1),
-		lastUpdated: Date.now(),
-	});
-}
-
-export async function addXP(uid, amount) {
-	const ref = doc(db, "users", uid);
-	await updateDoc(ref, {
-		xp: increment(amount),
-		lastUpdated: Date.now(),
-	});
-}
-
-export async function levelUp(uid, newLevel, deduction) {
-	const ref = doc(db, "users", uid);
-	const newXpRequired = xpRequiredForLevel(newLevel);
-	await updateDoc(ref, {
-		level: newLevel,
-		xpToNextLevel: newXpRequired,
-		xp: increment(-deduction),
-		lastUpdated: Date.now(),
 	});
 }
 
