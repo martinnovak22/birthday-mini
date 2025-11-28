@@ -130,11 +130,11 @@
 	transform: scale(0.5);
 }
 
-.checkbox-wrapper input:checked+.checkbox-box::after {
+.checkbox-wrapper input:checked + .checkbox-box::after {
 	opacity: 1;
 }
 
-.checkbox-wrapper input:checked+.checkbox-box {
+.checkbox-wrapper input:checked + .checkbox-box {
 	box-shadow: 0 0 10px rgba(114, 156, 101, 0.6);
 }
 
@@ -167,16 +167,7 @@
 
 .plot.highlight {
 	box-shadow: 0 0 15px var(--green-600);
-}
-
-.plot.highlight {
 	transition: box-shadow 0.2s ease-out;
-}
-
-.plot:hover {
-	cursor:
-		url("./assets/drop.svg") 12 12,
-		auto;
 }
 
 .plot:not(:disabled):hover {
@@ -194,12 +185,24 @@
 }
 
 .emoji {
-	font-size: 32px;
+	font-size: 30px;
 	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
 }
 
+.emoji-size-2 {
+	font-size: 40px;
+}
+
+.emoji-size-3 {
+	font-size: 50px;
+}
+
+.emoji-size-4 {
+	font-size: 60px;
+}
+
 .bloom {
-	font-size: 72px;
+	font-size: 70px;
 }
 
 .icon-image {
@@ -279,6 +282,12 @@
 	font-weight: 500;
 }
 
+.toast-bar-custom {
+	background-color: var(--green-400);
+	padding: 0;
+	margin: 0;
+}
+
 .toast-button-wrapper {
 	display: flex;
 	column-gap: 12px;
@@ -346,7 +355,6 @@
 .toast-flower {
 	font-size: 52px;
 	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
-	/* same as blooms */
 	pointer-events: none;
 }
 

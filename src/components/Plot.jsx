@@ -19,12 +19,6 @@ const cheatWaterToTimeMap = {
 	5: 1,
 };
 
-const waterToSizeMap = {
-	2: "42px",
-	3: "52px",
-	4: "62px",
-};
-
 function Plot({
 	water,
 	flower,
@@ -82,7 +76,7 @@ function Plot({
 				)}
 				{water === 1 && <span className={"emoji seed"}>🌱</span>}
 				{water >= 2 && water < 5 && (
-					<span className={"emoji"} style={{ fontSize: waterToSizeMap[water] }}>
+					<span className={`emoji emoji-size-${water}`}>
 						🌿
 					</span>
 				)}
