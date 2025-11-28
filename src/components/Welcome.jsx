@@ -10,7 +10,6 @@ export const Welcome = () => {
 			<button className={"button"} onClick={signInWithGoogle} type={"button"}>
 				Login
 			</button>
-			<div className={"background"} />
 		</div>
 	);
 };
