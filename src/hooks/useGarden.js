@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	emptyGarden,
 	loadGardenFromDB,
@@ -6,11 +6,9 @@ import {
 } from "../utils/gardenDB.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
 import {
-	addBloom,
-	addXP,
 	calculateProgression,
-	levelUp,
 	loadUserProfile,
+	processBloom,
 } from "../utils/userDB.js";
 
 const PLOTS = 9;
@@ -22,6 +20,8 @@ export function useGarden(user) {
 	const [error, setError] = useState(null);
 	const [sparkle, setSparkle] = useState(new Set());
 	const [activePlot, setActivePlot] = useState(null);
+
+	const updateQueue = useRef(Promise.resolve());
 
 	useEffect(() => {
 		if (!user) return;
@@ -51,57 +51,49 @@ export function useGarden(user) {
 	}, [user, garden]);
 
 	const water = useCallback(
-		(index) => {
+		async (index) => {
+			if (!garden) return;
+
+			const now = Date.now();
+			const prevPlot = garden[index];
+
+			if (prevPlot.finished) return;
+
+			hapticTap();
+
+			const nextPlot = { ...prevPlot, lastWatered: now };
+			let newWaterLevel = Math.min(nextPlot.water + 1, 5);
+			nextPlot.water = newWaterLevel;
+
+			let isFinished = false;
+			if (newWaterLevel >= 5) {
+				nextPlot.finished = true;
+				isFinished = true;
+			}
+
 			setGarden((prev) => {
-				if (!prev) return prev;
-
-				const now = Date.now();
 				const next = [...prev];
-				const prevPlot = next[index];
-
-				hapticTap();
-
-				const p = { ...prevPlot, lastWatered: now };
-				if (p.finished) return prev;
-
-				p.water = Math.min(p.water + 1, 5);
-
-				if (p.water >= 5) {
-					p.finished = true;
-					setSparkle((prev) => new Set(prev).add(index));
-					hapticBloom();
-
-					const XP_PER_BLOOM = 100;
-					addBloom(user.uid);
-					addXP(user.uid, XP_PER_BLOOM);
-
-					setProfile((prevProfile) => {
-						if (!prevProfile) return prevProfile;
-
-						const updated = { ...prevProfile };
-						updated.blooms += 1;
-						updated.xp = (updated.xp || 0) + XP_PER_BLOOM;
-
-						const { level, xp, xpToNextLevel, deduction, leveledUp } =
-							calculateProgression(updated);
-
-						updated.level = level;
-						updated.xp = xp;
-						updated.xpToNextLevel = xpToNextLevel;
-
-						if (leveledUp) {
-							levelUp(user.uid, updated.level, deduction);
-						}
-
-						return updated;
-					});
-				}
-
-				next[index] = p;
+				next[index] = nextPlot;
 				return next;
 			});
+
+			if (isFinished) {
+				setSparkle((prev) => new Set(prev).add(index));
+				hapticBloom();
+
+				const XP_PER_BLOOM = 100;
+
+				updateQueue.current = updateQueue.current.then(async () => {
+					try {
+						const updatedProfile = await processBloom(user.uid, XP_PER_BLOOM);
+						setProfile((prev) => ({ ...prev, ...updatedProfile }));
+					} catch (e) {
+						console.error("Failed to save progress", e);
+					}
+				});
+			}
 		},
-		[user?.uid],
+		[garden, user?.uid],
 	);
 
 	const plant = useCallback((index, flower) => {

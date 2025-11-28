@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGarden } from "../hooks/useGarden.js";
 import { useSwipe } from "../hooks/useSwipe.js";
@@ -40,7 +40,14 @@ export const Garden = ({ user }) => {
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [adminCheatOn, setAdminCheatOn] = useState(false);
+	const [isTurboMode, setIsTurboMode] = useState(() => {
+		const saved = localStorage.getItem("isTurboMode");
+		return saved === "true";
+	});
+
+	useEffect(() => {
+		localStorage.setItem("isTurboMode", isTurboMode);
+	}, [isTurboMode]);
 
 	useSwipe({
 		onSwipeLeft: () => setMenuOpen(false),
@@ -96,7 +103,7 @@ export const Garden = ({ user }) => {
 							);
 						}}
 						onParticlesDone={() => clearSparkle(i)}
-						cheatOn={adminCheatOn}
+						isTurboMode={isTurboMode}
 					/>
 				))}
 			</section>
@@ -109,8 +116,8 @@ export const Garden = ({ user }) => {
 				onReset={resetGarden}
 				toast={toast}
 				isAdmin={isAdmin}
-				adminCheatOn={adminCheatOn}
-				setAdminCheatOn={setAdminCheatOn}
+				isTurboMode={isTurboMode}
+				setIsTurboMode={setIsTurboMode}
 			/>
 		</>
 	);

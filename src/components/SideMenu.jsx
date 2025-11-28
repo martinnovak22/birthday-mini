@@ -14,8 +14,8 @@ export const SideMenu = ({
 	onReset,
 	toast,
 	isAdmin,
-	adminCheatOn,
-	setAdminCheatOn,
+	isTurboMode,
+	setIsTurboMode,
 }) => {
 	const blooms = garden ? garden.filter((p) => p.water === 5) : [];
 	const hasStarted = garden ? garden.some((p) => p.water >= 0) : false;
@@ -42,12 +42,12 @@ export const SideMenu = ({
 				<User profile={profile} name={name} />
 				{isAdmin ? (
 					<label className={"checkbox-wrapper"}>
-						<span>Admin speed</span>
+						<span>Turbo Mode</span>
 						<input
 							type={"checkbox"}
 							id={"cheat"}
-							value={adminCheatOn}
-							onChange={(e) => setAdminCheatOn(e.target.checked)}
+							checked={isTurboMode}
+							onChange={(e) => setIsTurboMode(e.target.checked)}
 						/>
 						<span className={"checkbox-box"} />
 					</label>

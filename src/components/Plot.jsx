@@ -34,10 +34,10 @@ function Plot({
 	onSeedClick,
 	showParticles,
 	isHighlighted,
-	cheatOn,
+	isTurboMode,
 }) {
 	const [now, setNow] = useState(Date.now());
-	const waterToTimeMap = cheatOn ? cheatWaterToTimeMap : normalWaterToTimeMap;
+	const waterToTimeMap = isTurboMode ? cheatWaterToTimeMap : normalWaterToTimeMap;
 
 	const effectiveNow = Math.max(now, lastWatered);
 	const duration = waterToTimeMap[water] || 0;

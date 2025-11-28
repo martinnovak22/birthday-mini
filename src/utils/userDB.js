@@ -1,4 +1,4 @@
-import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 export async function loadUserProfile(uid) {
@@ -31,7 +31,6 @@ export async function loadUserProfile(uid) {
 		});
 	}
 
-	console.log(data);
 	return data;
 }
 
@@ -49,6 +48,36 @@ export function calculateProgression(current) {
 	}
 
 	return { level, xp, xpToNextLevel, deduction, leveledUp };
+}
+
+export async function processBloom(uid, xpAmount) {
+	const ref = doc(db, "users", uid);
+	return await runTransaction(db, async (transaction) => {
+		const sfDoc = await transaction.get(ref);
+		if (!sfDoc.exists()) {
+			throw "Document does not exist!";
+		}
+
+		const data = sfDoc.data();
+		const newBlooms = (data.blooms || 0) + 1;
+		const newXp = (data.xp || 0) + xpAmount;
+
+		const { level, xp, xpToNextLevel } = calculateProgression({
+			...data,
+			xp: newXp,
+		});
+
+		const updatedData = {
+			blooms: newBlooms,
+			level,
+			xp,
+			xpToNextLevel,
+			lastUpdated: Date.now(),
+		};
+
+		transaction.update(ref, updatedData);
+		return updatedData;
+	});
 }
 
 export async function addBloom(uid) {
