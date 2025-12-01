@@ -1,31 +1,55 @@
 import "./App.css";
-import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { Garden } from "./components/Garden.jsx";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Loading } from "./components/Loading.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
-import { Welcome } from "./components/Welcome.jsx";
-import { auth } from "./utils/firebase.js";
+
+const Garden = lazy(() =>
+	import("./components/Garden.jsx").then((module) => ({
+		default: module.Garden,
+	})),
+);
+const Welcome = lazy(() =>
+	import("./components/Welcome.jsx").then((module) => ({
+		default: module.Welcome,
+	})),
+);
 
 function App() {
 	const [user, setUser] = useState(null);
 	const [loadingUser, setLoadingUser] = useState(true);
 
+	const authPromise = import("./utils/firebase.js").then((m) => m.auth);
+	const authStateChangedPromise = import("firebase/auth").then(
+		(m) => m.onAuthStateChanged,
+	);
+
 	useEffect(() => {
-		const unsub = onAuthStateChanged(auth, (u) => {
-			setUser(u);
-			setLoadingUser(false);
-		});
-		return () => unsub();
-	}, []);
+		let unsub;
+
+		Promise.all([authPromise, authStateChangedPromise]).then(
+			([auth, onAuthStateChanged]) => {
+				unsub = onAuthStateChanged(auth, (u) => {
+					setUser(u);
+					setLoadingUser(false);
+				});
+			},
+		);
+
+		return () => unsub?.();
+	}, [authPromise, authStateChangedPromise]);
 
 	return (
 		<main className={"app"}>
 			<ToastProvider />
 			<div className={"background"} />
 			{loadingUser ? <Loading title={"Loading user…"} /> : null}
-			{!loadingUser && !user ? <Welcome /> : null}
-			{!loadingUser && user ? <Garden user={user} /> : null}
+			<Suspense fallback={<Loading title="Loading..." />}>
+				{!loadingUser && !user ? <Welcome /> : null}
+			</Suspense>
+
+			<Suspense fallback={<Loading title="Loading..." />}>
+				{!loadingUser && user ? <Garden user={user} /> : null}
+			</Suspense>
 		</main>
 	);
 }
