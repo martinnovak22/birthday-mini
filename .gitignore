@@ -7,19 +7,38 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies & build
+node_modules/
+dist/
+dist-ssr/
+
+# Local env files
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.yarn/
+
+# Yarn Berry (PnP)
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/patches
+!.yarn/sdks
+!.yarn/versions
+
+# Do NOT track PnP artifacts
+.pnp.cjs
+.pnp.loader.mjs
+.yarn/install-state.gz
+
+# Ignore Yarn cache unless zero-install is used
+# Uncomment this if you DO NOT want zero-install:
+# .yarn/cache/
