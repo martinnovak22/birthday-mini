@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
@@ -39,6 +39,8 @@ function Plot({
 	const remaining = Math.max(0, (expiry - effectiveNow) / 1000);
 	const disabled = remaining > 0;
 
+	const clickingRef = useRef(false);
+
 	useEffect(() => {
 		if (!disabled) return;
 
@@ -54,11 +56,17 @@ function Plot({
 	}, [disabled, expiry]);
 
 	const handleClick = () => {
-		if (water === -1) {
-			onSeedClick();
-			return;
-		}
-		onWater();
+		if (clickingRef.current) return;
+		clickingRef.current = true;
+
+		setTimeout(() => {
+			clickingRef.current = false;
+			if (water === -1) {
+				onSeedClick();
+				return;
+			}
+			onWater();
+		}, 150);
 	};
 	return (
 		<button
