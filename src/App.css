@@ -32,12 +32,13 @@
 	align-items: center;
 	padding: 0 0 10px;
 }
+
 /*Menu styles*/
 .menu-toggle {
 	position: absolute;
 	left: 20px;
 	border: none;
-	color: var(--green-400);
+	color: var(--green-300);
 	background: none;
 	font-size: 26px;
 	cursor: pointer;
@@ -80,7 +81,7 @@
 	border: none;
 	font-size: 26px;
 	cursor: pointer;
-	color: var(--green-400);
+	color: var(--green-300);
 	position: absolute;
 	right: 10px;
 }
@@ -96,7 +97,7 @@
 	padding: 0.6em;
 	font-size: 14px;
 	font-weight: 600;
-	color: var(--green-400);
+	color: var(--green-300);
 }
 
 .checkbox-wrapper input {
@@ -125,7 +126,7 @@
 	font-size: 30px;
 	content: "⎷";
 	opacity: 0;
-	color: var(--green-400);
+	color: var(--green-300);
 	transform: scale(0.5);
 }
 
@@ -166,16 +167,7 @@
 
 .plot.highlight {
 	box-shadow: 0 0 15px var(--green-600);
-}
-
-.plot.highlight {
 	transition: box-shadow 0.2s ease-out;
-}
-
-.plot:hover {
-	cursor:
-		url("./assets/drop.svg") 12 12,
-		auto;
 }
 
 .plot:not(:disabled):hover {
@@ -193,12 +185,24 @@
 }
 
 .emoji {
-	font-size: 32px;
+	font-size: 30px;
 	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
 }
 
+.emoji-size-2 {
+	font-size: 40px;
+}
+
+.emoji-size-3 {
+	font-size: 50px;
+}
+
+.emoji-size-4 {
+	font-size: 60px;
+}
+
 .bloom {
-	font-size: 72px;
+	font-size: 70px;
 }
 
 .icon-image {
@@ -235,21 +239,16 @@
 }
 
 /*Button style*/
-.button-wrapper {
-	display: flex;
-	justify-content: space-evenly;
-	margin: 18px 0;
-}
-
 .button {
 	padding: 0.6em 1.2em;
 	border: 1px solid var(--green-400);
 	border-radius: 8px;
 	background: var(--green-900);
-	color: var(--green-400);
+	color: var(--green-300);
 	font-weight: 600;
 	cursor: pointer;
 	font-size: 14px;
+	line-height: 1.5;
 }
 
 .button:disabled {
@@ -257,95 +256,21 @@
 	cursor: not-allowed;
 }
 
-/*Timer styles*/
+/*Grow timer styles*/
 .cooldown {
 	position: absolute;
 	inset: 0;
 	display: flex;
-	gap: 5px;
+	gap: 10px;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background: rgba(0, 0, 0, 0.4);
+	background: rgba(0, 0, 0, 0.45);
 	color: white;
 	font-weight: bold;
 	font-size: 1.2rem;
 	pointer-events: none;
 	border-radius: inherit;
-}
-
-.loader {
-	width: 60px;
-	aspect-ratio: 1;
-	color: #000;
-	border: 10px solid;
-	box-sizing: border-box;
-	border-radius: 50%;
-	animation: l6 2s infinite linear;
-	position: relative;
-}
-
-.loader:before {
-	content: "";
-	position: absolute;
-	height: 20px;
-	inset: auto calc(50% - 10px) 100%;
-	border-radius: 5px 5px 0 0;
-	background:
-		linear-gradient(to bottom, currentColor 0%, currentColor 30%) top left /
-		100% 30% no-repeat,
-		linear-gradient(to bottom, currentColor 0%, currentColor 100%) top left /
-		50% 100%;
-}
-
-.loader:after {
-	content: "";
-	position: absolute;
-	inset: -8px -10px auto;
-	height: 15px;
-	background:
-		radial-gradient(farthest-side, currentColor 94%, #0000) left no-repeat,
-		radial-gradient(farthest-side, currentColor 94%, #0000) right no-repeat;
-	background-size: 15px 15px;
-}
-
-/*CSS animation*/
-@keyframes l6 {
-	0% {
-		background-image: conic-gradient(#77a4bd 0, #0000 0);
-	}
-
-	12.5% {
-		background-image: conic-gradient(#77a4bd 45deg, #0000 46deg);
-	}
-
-	25% {
-		background-image: conic-gradient(#77a4bd 90deg, #0000 91deg);
-	}
-
-	37.5% {
-		background-image: conic-gradient(#77a4bd 135deg, #0000 136deg);
-	}
-
-	50% {
-		background-image: conic-gradient(#77a4bd 180deg, #0000 181deg);
-	}
-
-	62.5% {
-		background-image: conic-gradient(#77a4bd 225deg, #0000 226deg);
-	}
-
-	75% {
-		background-image: conic-gradient(#77a4bd 270deg, #0000 271deg);
-	}
-
-	87.5% {
-		background-image: conic-gradient(#77a4bd 315deg, #0000 316deg);
-	}
-
-	100% {
-		background-image: conic-gradient(#77a4bd 360deg, #0000 360deg);
-	}
 }
 
 /*Toast style */
@@ -361,6 +286,7 @@
 .toast-button-wrapper {
 	display: flex;
 	column-gap: 12px;
+	align-items: center;
 }
 
 .toast-flowers {
@@ -381,9 +307,12 @@
 	font-size: 14px;
 	margin-bottom: 8px;
 }
+.toast span {
+	color: black;
+}
 
 .toast.flower-select-toast {
-	width: 320px;
+	width: 300px;
 }
 
 .x-button {
@@ -397,8 +326,8 @@
 
 /* Flower selection button */
 .toast-flower-button {
-	width: 100px;
-	height: 90px;
+	width: 90px;
+	height: 80px;
 	border-radius: 14px;
 	border: 2px solid var(--green-400);
 	background: var(--green-900);
@@ -424,7 +353,7 @@
 
 .toast-flower {
 	font-size: 52px;
-	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33); /* same as blooms */
+	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.33);
 	pointer-events: none;
 }
 
@@ -440,7 +369,7 @@
 }
 
 .user-text {
-	color: var(--green-400);
+	color: var(--green-300);
 	padding: 0;
 	margin: 0;
 }
@@ -455,7 +384,7 @@
 	display: flex;
 	justify-content: space-between;
 	font-size: 12px;
-	color: var(--green-400);
+	color: var(--green-300);
 	margin-bottom: 4px;
 	font-weight: 500;
 }

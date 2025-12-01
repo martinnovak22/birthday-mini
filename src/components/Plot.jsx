@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
 import BloomParticles from "./BloomParticles";
@@ -19,12 +19,6 @@ const cheatWaterToTimeMap = {
 	5: 1,
 };
 
-const waterToSizeMap = {
-	2: "42px",
-	3: "52px",
-	4: "62px",
-};
-
 function Plot({
 	water,
 	flower,
@@ -32,24 +26,47 @@ function Plot({
 	onParticlesDone,
 	lastWatered,
 	onSeedClick,
-	now,
 	showParticles,
 	isHighlighted,
-	cheatOn,
+	isTurboMode,
 }) {
-	const waterToTimeMap = cheatOn ? cheatWaterToTimeMap : normalWaterToTimeMap;
-	const remaining = Math.max(
-		0,
-		waterToTimeMap[water] - (now - lastWatered) / 1000,
-	);
+	const [now, setNow] = useState(Date.now());
+	const waterToTimeMap = isTurboMode ? cheatWaterToTimeMap : normalWaterToTimeMap;
+
+	const effectiveNow = Math.max(now, lastWatered);
+	const duration = waterToTimeMap[water] || 0;
+	const expiry = lastWatered + duration * 1000;
+	const remaining = Math.max(0, (expiry - effectiveNow) / 1000);
 	const disabled = remaining > 0;
 
+	const clickingRef = useRef(false);
+
+	useEffect(() => {
+		if (!disabled) return;
+
+		const id = setInterval(() => {
+			const current = Date.now();
+			setNow(current);
+			if (current >= expiry) {
+				clearInterval(id);
+			}
+		}, 100);
+
+		return () => clearInterval(id);
+	}, [disabled, expiry]);
+
 	const handleClick = () => {
-		if (water === -1) {
-			onSeedClick();
-			return;
-		}
-		onWater();
+		if (clickingRef.current) return;
+		clickingRef.current = true;
+
+		setTimeout(() => {
+			clickingRef.current = false;
+			if (water === -1) {
+				onSeedClick();
+				return;
+			}
+			onWater();
+		}, 150);
 	};
 	return (
 		<button
@@ -67,7 +84,7 @@ function Plot({
 				)}
 				{water === 1 && <span className={"emoji seed"}>🌱</span>}
 				{water >= 2 && water < 5 && (
-					<span className={"emoji"} style={{ fontSize: waterToSizeMap[water] }}>
+					<span className={`emoji emoji-size-${water}`}>
 						🌿
 					</span>
 				)}
@@ -85,7 +102,7 @@ function Plot({
 			{disabled && (
 				<div className={"cooldown"}>
 					<div className={"loader"} />
-					{Math.floor(remaining)}s
+					{Math.ceil(remaining)}s
 				</div>
 			)}
 		</button>

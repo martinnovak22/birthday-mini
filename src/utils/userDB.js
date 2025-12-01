@@ -1,4 +1,4 @@
-import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 export async function loadUserProfile(uid) {
@@ -31,7 +31,6 @@ export async function loadUserProfile(uid) {
 		});
 	}
 
-	console.log(data);
 	return data;
 }
 
@@ -51,30 +50,33 @@ export function calculateProgression(current) {
 	return { level, xp, xpToNextLevel, deduction, leveledUp };
 }
 
-export async function addBloom(uid) {
+export async function processBloom(uid, xpAmount) {
 	const ref = doc(db, "users", uid);
-	await updateDoc(ref, {
-		blooms: increment(1),
-		lastUpdated: Date.now(),
-	});
-}
+	return await runTransaction(db, async (transaction) => {
+		const sfDoc = await transaction.get(ref);
+		if (!sfDoc.exists()) {
+			throw "Document does not exist!";
+		}
 
-export async function addXP(uid, amount) {
-	const ref = doc(db, "users", uid);
-	await updateDoc(ref, {
-		xp: increment(amount),
-		lastUpdated: Date.now(),
-	});
-}
+		const data = sfDoc.data();
+		const newBlooms = (data.blooms || 0) + 1;
+		const newXp = (data.xp || 0) + xpAmount;
 
-export async function levelUp(uid, newLevel, deduction) {
-	const ref = doc(db, "users", uid);
-	const newXpRequired = xpRequiredForLevel(newLevel);
-	await updateDoc(ref, {
-		level: newLevel,
-		xpToNextLevel: newXpRequired,
-		xp: increment(-deduction),
-		lastUpdated: Date.now(),
+		const { level, xp, xpToNextLevel } = calculateProgression({
+			...data,
+			xp: newXp,
+		});
+
+		const updatedData = {
+			blooms: newBlooms,
+			level,
+			xp,
+			xpToNextLevel,
+			lastUpdated: Date.now(),
+		};
+
+		transaction.update(ref, updatedData);
+		return updatedData;
 	});
 }
 

@@ -1,7 +1,9 @@
 import { signOut } from "firebase/auth";
+import { toast } from "react-hot-toast";
 import { auth } from "../utils/firebase.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
+import { OnboardingToast } from "./OnboardingToast.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
 import { User } from "./User.jsx";
 
@@ -14,8 +16,8 @@ export const SideMenu = ({
 	onReset,
 	toast,
 	isAdmin,
-	adminCheatOn,
-	setAdminCheatOn,
+	isTurboMode,
+	setIsTurboMode,
 }) => {
 	const blooms = garden ? garden.filter((p) => p.water === 5) : [];
 	const hasStarted = garden ? garden.some((p) => p.water >= 0) : false;
@@ -42,16 +44,35 @@ export const SideMenu = ({
 				<User profile={profile} name={name} />
 				{isAdmin ? (
 					<label className={"checkbox-wrapper"}>
-						<span>Admin speed</span>
+						<span>Turbo Mode</span>
 						<input
 							type={"checkbox"}
 							id={"cheat"}
-							value={adminCheatOn}
-							onChange={(e) => setAdminCheatOn(e.target.checked)}
+							checked={isTurboMode}
+							onChange={(e) => setIsTurboMode(e.target.checked)}
 						/>
 						<span className={"checkbox-box"} />
 					</label>
 				) : null}
+				<button
+					type={"button"}
+					className={"button"}
+					onClick={() => {
+						onClose();
+						toast(
+							<OnboardingToast
+								toast={{
+									dismiss: () => {
+										toast.dismiss();
+									},
+								}}
+							/>,
+							{ duration: Infinity },
+						);
+					}}
+				>
+					How to play 🌱
+				</button>
 				<button
 					type={"button"}
 					className={"button"}

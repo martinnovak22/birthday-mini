@@ -51,14 +51,7 @@ export const ToastProvider = () => {
 	return (
 		<Toaster>
 			{(t) => (
-				<ToastBar
-					toast={t}
-					style={{
-						backgroundColor: "var(--green-400)",
-						padding: 0,
-						margin: 0,
-					}}
-				>
+				<ToastBar toast={t} style={{ backgroundColor: "var(--green-400)" }}>
 					{({ message }) => <ToastContent t={t} message={message} />}
 				</ToastBar>
 			)}

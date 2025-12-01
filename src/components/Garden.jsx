@@ -4,6 +4,8 @@ import { useGarden } from "../hooks/useGarden.js";
 import { useSwipe } from "../hooks/useSwipe.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
+import { Loading } from "./Loading.jsx";
+import { OnboardingToast } from "./OnboardingToast.jsx";
 import Plot from "./Plot.jsx";
 import { SideMenu } from "./SideMenu.jsx";
 
@@ -39,20 +41,42 @@ export const Garden = ({ user }) => {
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [now, setNow] = useState(Date.now());
-	const [adminCheatOn, setAdminCheatOn] = useState(false);
+	const [isTurboMode, setIsTurboMode] = useState(() => {
+		const saved = localStorage.getItem("isTurboMode");
+		return saved === "true";
+	});
+
+	const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
+		return localStorage.getItem("hasSeenOnboarding") === "true";
+	});
+
+	useEffect(() => {
+		localStorage.setItem("isTurboMode", isTurboMode);
+	}, [isTurboMode]);
+
+	useEffect(() => {
+		if (!hasSeenOnboarding) {
+			toast(
+				<OnboardingToast
+					toast={{
+						dismiss: () => {
+							localStorage.setItem("hasSeenOnboarding", "true");
+							setHasSeenOnboarding(true);
+							toast.dismiss();
+						},
+					}}
+				/>,
+				{ duration: Infinity },
+			);
+		}
+	}, [hasSeenOnboarding]);
 
 	useSwipe({
 		onSwipeLeft: () => setMenuOpen(false),
 	});
 
-	useEffect(() => {
-		const id = setInterval(() => setNow(Date.now()), 1000);
-		return () => clearInterval(id);
-	}, []);
-
 	if (isLoading) {
-		return <span className="text">Loading garden…</span>;
+		return <Loading title={"Loading garden…"} />;
 	}
 
 	if (error) {
@@ -78,7 +102,6 @@ export const Garden = ({ user }) => {
 					<Plot
 						key={i.toString()}
 						{...plot}
-						now={now}
 						onWater={() => water(i)}
 						showParticles={sparkle.has(i)}
 						isHighlighted={activePlot === i}
@@ -102,7 +125,7 @@ export const Garden = ({ user }) => {
 							);
 						}}
 						onParticlesDone={() => clearSparkle(i)}
-						cheatOn={adminCheatOn}
+						isTurboMode={isTurboMode}
 					/>
 				))}
 			</section>
@@ -115,8 +138,8 @@ export const Garden = ({ user }) => {
 				onReset={resetGarden}
 				toast={toast}
 				isAdmin={isAdmin}
-				adminCheatOn={adminCheatOn}
-				setAdminCheatOn={setAdminCheatOn}
+				isTurboMode={isTurboMode}
+				setIsTurboMode={setIsTurboMode}
 			/>
 		</>
 	);
