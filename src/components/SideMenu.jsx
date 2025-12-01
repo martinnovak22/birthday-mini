@@ -1,7 +1,9 @@
 import { signOut } from "firebase/auth";
+import { toast } from "react-hot-toast";
 import { auth } from "../utils/firebase.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
+import { OnboardingToast } from "./OnboardingToast.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
 import { User } from "./User.jsx";
 
@@ -52,6 +54,25 @@ export const SideMenu = ({
 						<span className={"checkbox-box"} />
 					</label>
 				) : null}
+				<button
+					type={"button"}
+					className={"button"}
+					onClick={() => {
+						onClose();
+						toast(
+							<OnboardingToast
+								toast={{
+									dismiss: () => {
+										toast.dismiss();
+									},
+								}}
+							/>,
+							{ duration: Infinity },
+						);
+					}}
+				>
+					How to play 🌱
+				</button>
 				<button
 					type={"button"}
 					className={"button"}

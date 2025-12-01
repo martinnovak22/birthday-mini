@@ -38,7 +38,7 @@
 	position: absolute;
 	left: 20px;
 	border: none;
-	color: var(--green-400);
+	color: var(--green-300);
 	background: none;
 	font-size: 26px;
 	cursor: pointer;
@@ -81,7 +81,7 @@
 	border: none;
 	font-size: 26px;
 	cursor: pointer;
-	color: var(--green-400);
+	color: var(--green-300);
 	position: absolute;
 	right: 10px;
 }
@@ -97,7 +97,7 @@
 	padding: 0.6em;
 	font-size: 14px;
 	font-weight: 600;
-	color: var(--green-400);
+	color: var(--green-300);
 }
 
 .checkbox-wrapper input {
@@ -126,7 +126,7 @@
 	font-size: 30px;
 	content: "⎷";
 	opacity: 0;
-	color: var(--green-400);
+	color: var(--green-300);
 	transform: scale(0.5);
 }
 
@@ -244,10 +244,11 @@
 	border: 1px solid var(--green-400);
 	border-radius: 8px;
 	background: var(--green-900);
-	color: var(--green-400);
+	color: var(--green-300);
 	font-weight: 600;
 	cursor: pointer;
 	font-size: 14px;
+	line-height: 1.5;
 }
 
 .button:disabled {
@@ -282,15 +283,10 @@
 	font-weight: 500;
 }
 
-.toast-bar-custom {
-	background-color: var(--green-400);
-	padding: 0;
-	margin: 0;
-}
-
 .toast-button-wrapper {
 	display: flex;
 	column-gap: 12px;
+	align-items: center;
 }
 
 .toast-flowers {
@@ -311,9 +307,12 @@
 	font-size: 14px;
 	margin-bottom: 8px;
 }
+.toast span {
+	color: black;
+}
 
 .toast.flower-select-toast {
-	width: 320px;
+	width: 300px;
 }
 
 .x-button {
@@ -327,8 +326,8 @@
 
 /* Flower selection button */
 .toast-flower-button {
-	width: 100px;
-	height: 90px;
+	width: 90px;
+	height: 80px;
 	border-radius: 14px;
 	border: 2px solid var(--green-400);
 	background: var(--green-900);
@@ -370,7 +369,7 @@
 }
 
 .user-text {
-	color: var(--green-400);
+	color: var(--green-300);
 	padding: 0;
 	margin: 0;
 }
@@ -385,7 +384,7 @@
 	display: flex;
 	justify-content: space-between;
 	font-size: 12px;
-	color: var(--green-400);
+	color: var(--green-300);
 	margin-bottom: 4px;
 	font-weight: 500;
 }

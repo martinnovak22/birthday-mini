@@ -5,6 +5,7 @@
 	--green-600: #6d835c;
 	--green-500: #729c65;
 	--green-400: #788878;
+	--green-300: #949c94;
 
 	--bg: #0e1a0a;
 
@@ -45,12 +46,12 @@ h2,
 h3,
 h4 {
 	line-height: 1.2;
-	color: var(--green-400);
+	color: var(--green-300);
 	margin: 0;
 }
 
 span {
-	color: var(--green-400);
+	color: var(--green-300);
 }
 
 h1 {
@@ -112,6 +113,12 @@ button {
 
 .screen .loader {
 	zoom: 0.4;
+}
+
+.onboarding-text {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
 .loader:before,

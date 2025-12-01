@@ -17,6 +17,7 @@ export const SelectionToast = ({ onCustomSelect, toast, blooms }) => {
 					Custom
 				</Toast.Button>
 
+				<span>or</span>
 				<Toast.Button
 					onClick={() => {
 						toast.dismiss();

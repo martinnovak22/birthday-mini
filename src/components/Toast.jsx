@@ -51,10 +51,7 @@ export const ToastProvider = () => {
 	return (
 		<Toaster>
 			{(t) => (
-				<ToastBar
-					toast={t}
-					className="toast-bar-custom"
-				>
+				<ToastBar toast={t} style={{ backgroundColor: "var(--green-400)" }}>
 					{({ message }) => <ToastContent t={t} message={message} />}
 				</ToastBar>
 			)}

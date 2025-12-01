@@ -5,6 +5,7 @@ import { useSwipe } from "../hooks/useSwipe.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import { Loading } from "./Loading.jsx";
+import { OnboardingToast } from "./OnboardingToast.jsx";
 import Plot from "./Plot.jsx";
 import { SideMenu } from "./SideMenu.jsx";
 
@@ -45,9 +46,30 @@ export const Garden = ({ user }) => {
 		return saved === "true";
 	});
 
+	const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
+		return localStorage.getItem("hasSeenOnboarding") === "true";
+	});
+
 	useEffect(() => {
 		localStorage.setItem("isTurboMode", isTurboMode);
 	}, [isTurboMode]);
+
+	useEffect(() => {
+		if (!hasSeenOnboarding) {
+			toast(
+				<OnboardingToast
+					toast={{
+						dismiss: () => {
+							localStorage.setItem("hasSeenOnboarding", "true");
+							setHasSeenOnboarding(true);
+							toast.dismiss();
+						},
+					}}
+				/>,
+				{ duration: Infinity },
+			);
+		}
+	}, [hasSeenOnboarding]);
 
 	useSwipe({
 		onSwipeLeft: () => setMenuOpen(false),
