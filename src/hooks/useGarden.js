@@ -5,11 +5,7 @@ import {
 	saveGardenToDB,
 } from "../utils/gardenDB.js";
 import { hapticBloom, hapticTap } from "../utils/haptics.js";
-import {
-	calculateProgression,
-	loadUserProfile,
-	processBloom,
-} from "../utils/userDB.js";
+import { loadUserProfile, processBloom } from "../utils/userDB.js";
 
 const PLOTS = 9;
 
@@ -62,7 +58,7 @@ export function useGarden(user) {
 			hapticTap();
 
 			const nextPlot = { ...prevPlot, lastWatered: now };
-			let newWaterLevel = Math.min(nextPlot.water + 1, 5);
+			const newWaterLevel = Math.min(nextPlot.water + 1, 5);
 			nextPlot.water = newWaterLevel;
 
 			let isFinished = false;
