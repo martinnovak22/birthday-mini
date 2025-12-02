@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import { auth } from "../utils/firebase.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
+import { Footer } from "./Footer.jsx";
 import { OnboardingToast } from "./OnboardingToast.jsx";
 import { SelectionToast } from "./SelectionToast.jsx";
 import { User } from "./User.jsx";
@@ -46,7 +47,7 @@ export const SideMenu = ({
 				<User profile={profile} name={name} />
 				{isAdmin ? (
 					<label className={"checkbox-wrapper"}>
-						<span>Turbo Mode</span>
+						<span>Turbo Mode 🚀</span>
 						<input
 							type={"checkbox"}
 							id={"cheat"}
@@ -142,6 +143,8 @@ export const SideMenu = ({
 				>
 					Logout
 				</button>
+
+				<Footer />
 			</div>
 		</>
 	);

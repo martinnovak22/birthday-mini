@@ -53,6 +53,18 @@
 	background-color: var(--bg);
 }
 
+.footer {
+	display: flex;
+	flex-direction: column;
+	margin-top: auto;
+	margin-bottom: 40px;
+}
+
+.footer-text {
+	font-size: 10px;
+	font-weight: 700;
+}
+
 .menu-overlay.open {
 	opacity: 0.4;
 }
@@ -62,7 +74,7 @@
 	top: 0;
 	width: 260px;
 	left: -301px;
-	height: 100vh;
+	height: 100%;
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
