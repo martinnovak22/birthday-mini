@@ -1,6 +1,7 @@
 import "./App.css";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Loading } from "./components/Loading.jsx";
+import { SoundProvider } from "./contexts/SoundContext.jsx";
 import { ToastProvider } from "./components/Toast.jsx";
 
 const Garden = lazy(() =>
@@ -40,16 +41,18 @@ function App() {
 
 	return (
 		<main className={"app"}>
-			<ToastProvider />
-			<div className={"background"} />
-			{loadingUser ? <Loading title={"Loading user…"} /> : null}
-			<Suspense fallback={<Loading title="Loading..." />}>
-				{!loadingUser && !user ? <Welcome /> : null}
-			</Suspense>
+			<SoundProvider>
+				<ToastProvider />
+				<div className={"background"} />
+				{loadingUser ? <Loading title={"Loading user…"} /> : null}
+				<Suspense fallback={<Loading title="Loading..." />}>
+					{!loadingUser && !user ? <Welcome /> : null}
+				</Suspense>
 
-			<Suspense fallback={<Loading title="Loading..." />}>
-				{!loadingUser && user ? <Garden user={user} /> : null}
-			</Suspense>
+				<Suspense fallback={<Loading title="Loading..." />}>
+					{!loadingUser && user ? <Garden user={user} /> : null}
+				</Suspense>
+			</SoundProvider>
 		</main>
 	);
 }

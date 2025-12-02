@@ -1,6 +1,7 @@
 import { memo, useEffect, useRef, useState } from "react";
 import plus from "../assets/plus.png";
 import seed from "../assets/seed.png";
+import { useSound } from "../contexts/SoundContext.jsx";
 import BloomParticles from "./BloomParticles";
 
 const normalWaterToTimeMap = {
@@ -32,6 +33,8 @@ function Plot({
 }) {
 	const [now, setNow] = useState(Date.now());
 	const waterToTimeMap = isTurboMode ? cheatWaterToTimeMap : normalWaterToTimeMap;
+	const { playSound } = useSound();
+	const prevWaterRef = useRef(water);
 
 	const effectiveNow = Math.max(now, lastWatered);
 	const duration = waterToTimeMap[water] || 0;
@@ -40,6 +43,20 @@ function Plot({
 	const disabled = remaining > 0;
 
 	const clickingRef = useRef(false);
+
+	// Play sound when water level changes
+	useEffect(() => {
+		if (prevWaterRef.current !== water && water > prevWaterRef.current) {
+			if (water === 5) {
+				// Bloom sound when reaching max level
+				playSound("bloom");
+			} else if (water > 0) {
+				// Grow sound for intermediate levels
+				playSound("grow");
+			}
+		}
+		prevWaterRef.current = water;
+	}, [water, playSound]);
 
 	useEffect(() => {
 		if (!disabled) return;
@@ -58,6 +75,9 @@ function Plot({
 	const handleClick = () => {
 		if (clickingRef.current) return;
 		clickingRef.current = true;
+
+		// Play click sound immediately
+		playSound("click");
 
 		setTimeout(() => {
 			clickingRef.current = false;

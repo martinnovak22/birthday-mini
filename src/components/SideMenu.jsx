@@ -18,6 +18,8 @@ export const SideMenu = ({
 	isAdmin,
 	isTurboMode,
 	setIsTurboMode,
+	isSoundEnabled,
+	setIsSoundEnabled,
 }) => {
 	const blooms = garden ? garden.filter((p) => p.water === 5) : [];
 	const hasStarted = garden ? garden.some((p) => p.water >= 0) : false;
@@ -54,9 +56,19 @@ export const SideMenu = ({
 						<span className={"checkbox-box"} />
 					</label>
 				) : null}
+				<label className={"checkbox-wrapper"}>
+					<span>Sound Effects 🔊</span>
+					<input
+						type={"checkbox"}
+						id={"sound"}
+						checked={isSoundEnabled}
+						onChange={(e) => setIsSoundEnabled(e.target.checked)}
+					/>
+					<span className={"checkbox-box"} />
+				</label>
 				<button
 					type={"button"}
-					className={"button"}
+					className={"button button-side-menu"}
 					onClick={() => {
 						onClose();
 						toast(
@@ -75,7 +87,7 @@ export const SideMenu = ({
 				</button>
 				<button
 					type={"button"}
-					className={"button"}
+					className={"button button-side-menu"}
 					disabled={!hasStarted}
 					onClick={() => {
 						onClose();
@@ -94,7 +106,7 @@ export const SideMenu = ({
 
 				<button
 					type={"button"}
-					className={"button"}
+					className={"button button-side-menu"}
 					onClick={() => {
 						onClose();
 						toast(
@@ -115,7 +127,7 @@ export const SideMenu = ({
 				</button>
 				<button
 					type={"button"}
-					className={"button"}
+					className={"button button-side-menu"}
 					onClick={() => {
 						onClose();
 						toast(

@@ -93,8 +93,9 @@
 	cursor: pointer;
 	border-radius: 8px;
 	border: 2px solid var(--green-400);
+	border-left: 6px solid var(--green-500);
 	background: var(--green-900);
-	padding: 0.6em;
+	padding: 0.6em 0.6em 0.6em 1em;
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--green-300);
@@ -136,6 +137,35 @@
 
 .checkbox-wrapper input:checked + .checkbox-box {
 	box-shadow: 0 0 10px rgba(114, 156, 101, 0.6);
+}
+
+/*Button style*/
+.button {
+	padding: 0.6em 1em;
+	border: 1px solid var(--green-400);
+	border-radius: 8px;
+	background: var(--green-900);
+	color: var(--green-300);
+	font-weight: 600;
+	cursor: pointer;
+	transform-style: preserve-3d;
+	transition: transform 0.15s;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.button-side-menu {
+	border-left: 6px solid var(--green-500);
+	text-align: left;
+}
+
+.button:active:not(:disabled) {
+	transform: translateY(4px);
 }
 
 /*Garden styles*/
@@ -236,24 +266,6 @@
 	max-width: 100%;
 	min-height: 100%;
 	border-radius: 8px;
-}
-
-/*Button style*/
-.button {
-	padding: 0.6em 1.2em;
-	border: 1px solid var(--green-400);
-	border-radius: 8px;
-	background: var(--green-900);
-	color: var(--green-300);
-	font-weight: 600;
-	cursor: pointer;
-	font-size: 14px;
-	line-height: 1.5;
-}
-
-.button:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
 }
 
 /*Grow timer styles*/

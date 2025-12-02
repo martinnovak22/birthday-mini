@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useSound } from "../contexts/SoundContext.jsx";
 import { useGarden } from "../hooks/useGarden.js";
 import { useSwipe } from "../hooks/useSwipe.js";
+import { storageManager } from "../utils/storageManager.js";
 import { ErrorRefresh } from "./Error.jsx";
 import { FlowerSelectToast } from "./FlowerSelectToast.jsx";
 import { Loading } from "./Loading.jsx";
@@ -41,17 +43,18 @@ export const Garden = ({ user }) => {
 	} = useGarden(user);
 
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [isTurboMode, setIsTurboMode] = useState(() => {
-		const saved = localStorage.getItem("isTurboMode");
-		return saved === "true";
-	});
+	const [isTurboMode, setIsTurboMode] = useState(() =>
+		storageManager.getTurboMode(),
+	);
 
-	const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
-		return localStorage.getItem("hasSeenOnboarding") === "true";
-	});
+	const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() =>
+		storageManager.getHasSeenOnboarding(),
+	);
+
+	const { isSoundEnabled, setIsSoundEnabled } = useSound();
 
 	useEffect(() => {
-		localStorage.setItem("isTurboMode", isTurboMode);
+		storageManager.setTurboMode(isTurboMode);
 	}, [isTurboMode]);
 
 	useEffect(() => {
@@ -60,7 +63,7 @@ export const Garden = ({ user }) => {
 				<OnboardingToast
 					toast={{
 						dismiss: () => {
-							localStorage.setItem("hasSeenOnboarding", "true");
+							storageManager.setHasSeenOnboarding(true);
 							setHasSeenOnboarding(true);
 							toast.dismiss();
 						},
@@ -140,6 +143,8 @@ export const Garden = ({ user }) => {
 				isAdmin={isAdmin}
 				isTurboMode={isTurboMode}
 				setIsTurboMode={setIsTurboMode}
+				isSoundEnabled={isSoundEnabled}
+				setIsSoundEnabled={setIsSoundEnabled}
 			/>
 		</>
 	);
