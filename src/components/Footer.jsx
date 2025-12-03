@@ -4,7 +4,7 @@ export const Footer = () => {
 			<span className={"footer-text"}>
 				For the one who blossoms in my heart
 			</span>
-			<span className={"footer-text"}>© 2025 Martin Novák v1.1.2</span>
+			<span className={"footer-text"}>© 2025 Martin Novák v1.1.3</span>
 		</div>
 	);
 };
