@@ -107,7 +107,7 @@
 	border: 2px solid var(--green-400);
 	border-left: 6px solid var(--green-500);
 	background: var(--green-900);
-	padding: 0.6em 0.6em 0.6em 1em;
+	padding: 8px 10px 8px 16px;
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--green-300);
@@ -148,12 +148,12 @@
 }
 
 .checkbox-wrapper input:checked + .checkbox-box {
-	box-shadow: 0 0 10px rgba(114, 156, 101, 0.6);
+	box-shadow: 0 0 10px rgba(114, 156, 101, 0.25);
 }
 
 /*Button style*/
 .button {
-	padding: 0.6em 1em;
+	padding: 0.5em 1em;
 	border: 1px solid var(--green-400);
 	border-radius: 8px;
 	background: var(--green-900);
@@ -164,6 +164,7 @@
 	transition: transform 0.15s;
 	font-size: 14px;
 	line-height: 1.5;
+	display: flex;
 }
 
 .button:disabled {
@@ -178,6 +179,18 @@
 
 .button:active:not(:disabled) {
 	transform: translateY(4px);
+}
+
+.side-menu .button {
+	padding: 8px 12px 8px 16px;
+}
+
+.menu-icon {
+	width: 20px;
+	height: 20px;
+	margin-left: auto;
+	filter: invert(66%) sepia(6%) saturate(314%) hue-rotate(71deg) brightness(91%)
+		contrast(95%);
 }
 
 /*Garden styles*/

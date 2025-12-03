@@ -1,5 +1,8 @@
 import { signOut } from "firebase/auth";
-import { toast } from "react-hot-toast";
+import download from "../assets/download.png";
+import info from "../assets/info.png";
+import off from "../assets/off.png";
+import restart from "../assets/restart.png";
 import { auth } from "../utils/firebase.js";
 import makeBouquetImage from "../utils/makeBouquetImage.js";
 import { ConfirmationToast } from "./ConfirmationToast.jsx";
@@ -84,7 +87,8 @@ export const SideMenu = ({
 						);
 					}}
 				>
-					How to play 🌱
+					How to play
+					<img src={info} alt={"info"} className={"menu-icon"} />
 				</button>
 				<button
 					type={"button"}
@@ -103,6 +107,7 @@ export const SideMenu = ({
 					}}
 				>
 					Start again
+					<img src={restart} alt={"restart"} className={"menu-icon"} />
 				</button>
 
 				<button
@@ -125,6 +130,7 @@ export const SideMenu = ({
 					disabled={allFinished}
 				>
 					Download bouquet
+					<img src={download} alt={"download"} className={"menu-icon"} />
 				</button>
 				<button
 					type={"button"}
@@ -142,6 +148,7 @@ export const SideMenu = ({
 					}}
 				>
 					Logout
+					<img src={off} alt={"logout"} className={"menu-icon"} />
 				</button>
 
 				<Footer />
