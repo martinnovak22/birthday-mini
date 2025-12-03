@@ -32,31 +32,30 @@ function Plot({
 	isTurboMode,
 }) {
 	const [now, setNow] = useState(Date.now());
-	const waterToTimeMap = isTurboMode ? cheatWaterToTimeMap : normalWaterToTimeMap;
+	const waterToTimeMap = isTurboMode
+		? cheatWaterToTimeMap
+		: normalWaterToTimeMap;
 	const { playSound } = useSound();
-	const prevWaterRef = useRef(water);
 
 	const effectiveNow = Math.max(now, lastWatered);
 	const duration = waterToTimeMap[water] || 0;
 	const expiry = lastWatered + duration * 1000;
 	const remaining = Math.max(0, (expiry - effectiveNow) / 1000);
 	const disabled = remaining > 0;
+	const prevDisabledRef = useRef(disabled);
 
 	const clickingRef = useRef(false);
 
-	// Play sound when water level changes
 	useEffect(() => {
-		if (prevWaterRef.current !== water && water > prevWaterRef.current) {
+		if (prevDisabledRef.current && !disabled && water > 0) {
 			if (water === 5) {
-				// Bloom sound when reaching max level
 				playSound("bloom");
 			} else if (water > 0) {
-				// Grow sound for intermediate levels
 				playSound("grow");
 			}
 		}
-		prevWaterRef.current = water;
-	}, [water, playSound]);
+		prevDisabledRef.current = disabled;
+	}, [disabled, water, playSound]);
 
 	useEffect(() => {
 		if (!disabled) return;
@@ -76,7 +75,6 @@ function Plot({
 		if (clickingRef.current) return;
 		clickingRef.current = true;
 
-		// Play click sound immediately
 		playSound("click");
 
 		setTimeout(() => {
@@ -104,9 +102,7 @@ function Plot({
 				)}
 				{water === 1 && <span className={"emoji seed"}>🌱</span>}
 				{water >= 2 && water < 5 && (
-					<span className={`emoji emoji-size-${water}`}>
-						🌿
-					</span>
+					<span className={`emoji emoji-size-${water}`}>🌿</span>
 				)}
 				{water === 5 && <span className={"emoji bloom"}>{flower}</span>}
 			</div>
